@@ -397,21 +397,7 @@ router.post('/:id/confirm', requireAdmin, async (req: Request, res: Response): P
         venueName: eventConfig.venue_name,
       });
 
-      // Email pass to attendee
-      const emailResult = await EmailService.sendTicketEmail({
-        toEmail: att.email,
-        name: att.name,
-        ticketCode,
-        category: att.assigned_category,
-        teamIdentifier: att.team_identifier,
-        eventName: eventConfig.name,
-        dateText: eventConfig.date_text,
-        venueName: eventConfig.venue_name,
-        passUrl,
-        svgString,
-      });
-
-      // Update attendee in DB
+      // Update attendee in DB immediately
       db.prepare(`
         UPDATE attendees
         SET
@@ -419,22 +405,31 @@ router.post('/:id/confirm', requireAdmin, async (req: Request, res: Response): P
           signed_token = ?,
           qr_data_url = ?,
           id_card_url = ?,
-          email_sent = ?,
-          email_sent_at = CURRENT_TIMESTAMP,
           status = 'confirmed'
         WHERE id = ?
-      `).run(ticketCode, signedToken, qrDataUrl, passUrl, emailResult.success ? 1 : 0, att.id);
+      `).run(ticketCode, signedToken, qrDataUrl, passUrl, att.id);
 
       updatedAttendees.push({
         id: att.id,
         name: att.name,
         ticketCode,
         passUrl,
-        emailSent: emailResult.success,
+        emailPayload: {
+          toEmail: att.email,
+          name: att.name,
+          ticketCode,
+          category: att.assigned_category,
+          teamIdentifier: att.team_identifier,
+          eventName: eventConfig.name,
+          dateText: eventConfig.date_text,
+          venueName: eventConfig.venue_name,
+          passUrl,
+          svgString,
+        },
       });
     }
 
-    // Update registration status
+    // Update registration status immediately
     db.prepare(`
       UPDATE registrations
       SET status = 'confirmed', confirmed_at = CURRENT_TIMESTAMP, rejection_reason = NULL
@@ -448,11 +443,28 @@ router.post('/:id/confirm', requireAdmin, async (req: Request, res: Response): P
       syncRegistrationToSupabase(fullReg as any, fullAtts as any).catch(err => console.warn('[SUPABASE] Confirmation sync error:', err));
     }
 
+    // Respond immediately to admin so UI is fast and never times out
     res.json({
       success: true,
-      message: `Registration confirmed. ${updatedAttendees.length} pass(es) generated and emailed.`,
-      attendees: updatedAttendees,
+      message: `Registration confirmed. ${updatedAttendees.length} pass(es) generated and queued for email delivery.`,
+      attendees: updatedAttendees.map(({ emailPayload, ...rest }) => rest),
     });
+
+    // Asynchronously dispatch attendee ticket emails in background
+    (async () => {
+      for (const item of updatedAttendees) {
+        try {
+          const emailResult = await EmailService.sendTicketEmail(item.emailPayload);
+          db.prepare(`
+            UPDATE attendees
+            SET email_sent = ?, email_sent_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+          `).run(emailResult.success ? 1 : 0, item.id);
+        } catch (emailErr) {
+          console.error(`[BACKGROUND EMAIL] Error sending ticket email to ${item.name}:`, emailErr);
+        }
+      }
+    })();
   } catch (err: unknown) {
     console.error('Confirmation error:', err);
     res.status(500).json({ error: 'Failed to confirm registration.' });

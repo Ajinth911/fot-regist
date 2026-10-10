@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { Registration, Attendee } from '../../types';
 import { Badge } from '../common/Badge';
 import { Modal } from '../common/Modal';
-import { IconSearch, IconEye, IconCheck, IconTrash, IconUsers, IconFilter, IconUser } from '../../lib/icons';
+import { IconSearch, IconEye, IconCheck, IconTrash, IconUsers, IconFilter, IconUser, IconLoader } from '../../lib/icons';
 
 interface GroupRegistrationsViewProps {
   registrations: Registration[];
@@ -287,10 +287,14 @@ export const GroupRegistrationsView: React.FC<GroupRegistrationsViewProps> = ({
                           type="button"
                           disabled={inProgress}
                           onClick={() => handleConfirmGroup(reg.id)}
-                          className="px-4 py-2 rounded-xl bg-[#C2E600] hover:bg-[#b5db00] text-[#0A0A0A] text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                          className={`px-4 py-2 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm transition-all ${
+                            inProgress
+                              ? 'bg-[#E6E6DF] text-[#8C8C85] cursor-not-allowed'
+                              : 'bg-[#C2E600] hover:bg-[#b5db00] text-[#0A0A0A] cursor-pointer'
+                          }`}
                         >
-                          <IconCheck size={14} />
-                          <span>Confirm All ({reg.attendee_count})</span>
+                          {inProgress ? <IconLoader size={14} /> : <IconCheck size={14} />}
+                          <span>{inProgress ? 'Confirming...' : `Confirm All (${reg.attendee_count})`}</span>
                         </button>
                         <button
                           type="button"

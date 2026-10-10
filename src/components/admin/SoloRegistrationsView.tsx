@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import type { Registration } from '../../types';
 import { Badge } from '../common/Badge';
 import { Modal } from '../common/Modal';
-import { IconSearch, IconEye, IconCheck, IconTrash, IconMail, IconFilter } from '../../lib/icons';
+import { IconSearch, IconEye, IconCheck, IconTrash, IconMail, IconFilter, IconLoader } from '../../lib/icons';
 
 interface SoloRegistrationsViewProps {
   registrations: Registration[];
@@ -217,10 +217,14 @@ export const SoloRegistrationsView: React.FC<SoloRegistrationsViewProps> = ({
                                 type="button"
                                 disabled={inProgress}
                                 onClick={() => handleConfirmAction(reg.id)}
-                                className="p-2 rounded-lg bg-[#C2E600] hover:bg-[#b5db00] text-[#0A0A0A] font-bold transition-all shadow-sm cursor-pointer"
-                                title="Confirm registration & email pass"
+                                className={`p-2 rounded-lg font-bold transition-all shadow-sm ${
+                                  inProgress
+                                    ? 'bg-[#E6E6DF] text-[#8C8C85] cursor-not-allowed'
+                                    : 'bg-[#C2E600] hover:bg-[#b5db00] text-[#0A0A0A] cursor-pointer'
+                                }`}
+                                title={inProgress ? 'Confirming and issuing pass...' : 'Confirm registration & email pass'}
                               >
-                                <IconCheck size={14} />
+                                {inProgress ? <IconLoader size={14} /> : <IconCheck size={14} />}
                               </button>
                               <button
                                 type="button"

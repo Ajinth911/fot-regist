@@ -44,18 +44,33 @@ export const AdminDashboardPage: React.FC<AdminDashboardPageProps> = ({
   }, [currentTab]);
 
   const handleConfirm = async (id: string) => {
-    await api.confirmRegistration(id);
-    loadRegistrations();
+    try {
+      await api.confirmRegistration(id);
+      await loadRegistrations();
+    } catch (err: unknown) {
+      console.error('Confirmation error:', err);
+      alert((err as Error).message || 'Failed to confirm registration.');
+    }
   };
 
   const handleReject = async (id: string, reason: string) => {
-    await api.rejectRegistration(id, reason);
-    loadRegistrations();
+    try {
+      await api.rejectRegistration(id, reason);
+      await loadRegistrations();
+    } catch (err: unknown) {
+      console.error('Rejection error:', err);
+      alert((err as Error).message || 'Failed to reject registration.');
+    }
   };
 
   const handleResendEmail = async (attendeeId: string) => {
-    await api.resendTicketEmail(attendeeId);
-    alert('Pass re-sent successfully to attendee email.');
+    try {
+      await api.resendTicketEmail(attendeeId);
+      alert('Pass re-sent successfully to attendee email.');
+    } catch (err: unknown) {
+      console.error('Resend error:', err);
+      alert((err as Error).message || 'Failed to resend pass email.');
+    }
   };
 
   return (

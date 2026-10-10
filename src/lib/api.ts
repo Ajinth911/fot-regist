@@ -22,7 +22,7 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   const adminToken = localStorage.getItem('fot_admin_token');
   const userToken = localStorage.getItem('fot_user_token');
   const isUserEndpoint = url.startsWith('/api/auth/user');
-  const isAdminEndpoint = url.startsWith('/api/scanner') || url.startsWith('/api/registrations/confirm') || url.startsWith('/api/registrations/reject') || url.startsWith('/api/export') || url.startsWith('/api/admin');
+  const isAdminEndpoint = url.startsWith('/api/scanner') || url.includes('/confirm') || url.includes('/reject') || url.includes('/resend-email') || url.startsWith('/api/export') || url.startsWith('/api/admin') || (url.startsWith('/api/registrations') && options.method !== 'POST');
   const token = isAdminEndpoint ? adminToken : (isUserEndpoint ? userToken : (adminToken || userToken));
   if (token) {
     defaultHeaders['Authorization'] = `Bearer ${token}`;

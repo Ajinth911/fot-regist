@@ -41,6 +41,9 @@ export class EmailService {
             user,
             pass,
           },
+          connectionTimeout: 7000,
+          greetingTimeout: 7000,
+          socketTimeout: 10000,
         });
       }
 
@@ -52,6 +55,9 @@ export class EmailService {
           user,
           pass,
         },
+        connectionTimeout: 7000,
+        greetingTimeout: 7000,
+        socketTimeout: 10000,
       });
     }
 

@@ -10,8 +10,8 @@ export const AdminLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [email, setEmail] = useState('admin@fot.org');
-  const [password, setPassword] = useState('fotadmin2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -210,10 +210,6 @@ export const AdminLoginPage: React.FC = () => {
                     </button>
                   </div>
                 </form>
-
-                <div className="p-3.5 rounded-xl bg-[#FFFFFF] border border-[#E6E6DF] text-xs text-[#55554F] text-center font-mono shadow-card-subtle">
-                  Default credentials: <strong>admin@fot.org</strong> / <strong>fotadmin2026</strong>
-                </div>
               </motion.div>
             ) : (
               <motion.div

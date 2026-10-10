@@ -1,0 +1,55 @@
+<svg width="600" height="900" viewBox="0 0 600 900" xmlns="http://www.w3.org/2000/svg" style="background:#FAFAF7; font-family:'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <!-- Background Canvas -->
+  <rect width="600" height="900" fill="#FAFAF7" />
+
+  <!-- Outer Card with 16px radius and hairline border -->
+  <rect x="24" y="24" width="552" height="852" rx="16" fill="#FFFFFF" stroke="#E6E6DF" stroke-width="1.5" />
+
+  <!-- Brand Header -->
+  <g transform="translate(56, 68)">
+    <text x="0" y="24" fill="#0A0A0A" font-size="28" font-weight="700" letter-spacing="-0.5">Friends of Tech<tspan fill="#C2E600">.</tspan></text>
+    <text x="0" y="44" fill="#8C8C85" font-size="12" font-weight="500">Presented by GenLab Pvt Ltd</text>
+  </g>
+
+  <!-- Ticket Code Monospace Box -->
+  <rect x="380" y="68" width="164" height="40" rx="8" fill="#F2F2EC" stroke="#E6E6DF" stroke-width="1" />
+  <text x="462" y="93" fill="#0A0A0A" font-size="14" font-weight="700" font-family="'JetBrains Mono', monospace" letter-spacing="1" text-anchor="middle">FOT-0013</text>
+
+  <!-- Divider Line -->
+  <line x1="56" y1="136" x2="544" y2="136" stroke="#E6E6DF" stroke-width="1" />
+
+  <!-- Attendee Details -->
+  <g transform="translate(56, 175)">
+    <text x="0" y="0" fill="#8C8C85" font-size="11" font-weight="700" font-family="'JetBrains Mono', monospace" letter-spacing="1">ATTENDEE PASS</text>
+    <text x="0" y="36" fill="#0A0A0A" font-size="28" font-weight="700" letter-spacing="-0.3">Rage</text>
+  </g>
+
+  <!-- Category Badge -->
+  <rect x="56" y="235" width="190" height="34" rx="17" fill="#C2E600" />
+  <text x="151" y="257" fill="#0A0A0A" font-size="12" font-weight="700" letter-spacing="0.5" text-anchor="middle">SOLO</text>
+
+  <!-- QR Code Tile -->
+  <rect x="140" y="300" width="320" height="320" rx="16" fill="#FFFFFF" stroke="#E6E6DF" stroke-width="1.5" />
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAAAklEQVR4AewaftIAABWrSURBVO3BQa4cuhYcwRJxZ7n/peZYFjzmsUGC6Jber4hfv/9IVVXVoZWqqqoLK1VVVRdWqqqqLqxUVVVdWKmqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF1aqqqourFRVVV1YqaqquvCTS0D+RWp2gLykZgfIp6h5BcgpNRMgO2omQCZqdoBM1OwAmajZAXJKzQ0gp9ScArKjZgJkR80EyEtqdoCcUnMKyL9IzamVqqqqCytVVVUXVqqqqi6sVFVVXVipqqq68JPH1HwbkFNqTgGZANlR8xKQCZBPULMDZKLmE9S8BGRHzQTIS2pOATml5hPUTIDsqDmlZgLkE9R8G5BXVqqqqi6sVFVVXVipqqq6sFJVVXVhpaqq6sJKVVXVhZ98EJBX1LwEZKJmR80nAPk2NRMgp4DsqLkBZEfNKTWngEzU7ACZqJkA2VHzCUBOAZmoeQnIvwjIK2o+YaWqqurCSlVV1YWVqqqqCytVVVUXVqqqqi78pP4vNaeAnFLzkpoJkB01EyA7QCZqdoBM1PyXqJkA2VFzQ80OkImaHSAvqdkB8m1qJkDq3EpVVdWFlaqqqgsrVVVVF1aqqqourFRVVV1YqaqquvCT+v8CsqNmAmQHyCk1EyATNa+omQDZUTMBsqPmJSDfpuYlIDtqTqmZAHlFzQTIRM0OkPq+laqqqgsrVVVVF1aqqqourFRVVV1YqaqquvCTD1LztwIyUXNKzSkgp9R8m5odIKeATNRMgJxS8wqQl4BM1OwAmajZATJRswPkFJCJmgmQHTUTIDtAJmq+Tc2/ZqWqqurCSlVV1YWVqqqqCytVVVUXVqqqqi6sVFVVXfjJY0D+VwCZqNkBMlGzA2SiZgJkR81LQHbUTIDsqJkAmajZAXIKyETNK0AmaiZAdtRMgOyomQDZUTMBsqNmAmSiZgfIRM0OkFNAJmpOAfkvWamqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF379/iP1/wRkR80EyCtqbgD5BDWngJxScwrIRM0rQD5FzQ6QiZodIBM1p4DsqPmbAdlRU7OVqqqqCytVVVUXVqqqqi6sVFVVXVipqqq68Ov3H7kAZEfNBMiOmpeAnFIzAbKj5iUgO2puANlRcwrIKTUvAflfoeYlIDtqJkB21EyAnFJzCsgpNd8GZKLmFJAdNRMgO2pOrVRVVV1YqaqqurBSVVV1YaWqqurCSlVV1YWVqqqqCz+5pGYHyCcAmaiZANkBMlHzCpBTQG6o2QFySs0nAJmomQDZUTMBsqNmAmRHzQTIjpoJkImaU2p2gEzUfBuQHTUTIJ8AZEfNRM0pIBM1O0A+YaWqqurCSlVV1YWVqqqqCytVVVUXVqqqqi78+v1HLgA5pWYHyETNKSCn1EyAnFKzA+SUmr8ZkFfUTIDUTM0pIBM1O0A+Rc0OkFNqXgJySs23AdlRc2qlqqrqwkpVVdWFlaqqqgsrVVVVF1aqqqourFRVVV349fuPfBmQiZodIBM1EyCn1HwTkImaCZAdNS8BOaXmJSA7aiZATql5BcgNNaeAfIKaHSAvqflfAWSiZgfIKTWnVqqqqi6sVFVVXVipqqq6sFJVVXVhpaqq6sKv33/kQ4DsqJkA+QQ1EyA7ak4Bmag5BeTb1OwA+Zup2QFySs0pIBM1EyA7aiZATqk5BWRHzQTIRM0OkE9QMwGyo+YGkB01EyCn1LyyUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF1aqqqou/OQSkB01p4BM1PyLgHyCmlNAJmp2gEyAnFLzEpAdNRMg36TmhppvAnIKyETNBMgraiZAPgHIRM0raiZAdtScWqmqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgs/uaRmB8hEzQ6Ql4CcUvOSmlNAXlKzo2YCZEfNBMgrQF4CUjM1EyA7aiZATgGZqNkBMlGzA2Si5pSaHSD/K1aqqqourFRVVV1YqaqqurBSVVV1YaWqqurCSlVV1YWfXAJyCsiOmgmQU2omQHaAfAKQl9RMgJxSswNkouYUkB01N4DsqJkA+VsBmajZATJRswPkvwbIjpoJkB01EyA7aiZAJkB21EzU7AD5hJWqqqoLK1VVVRdWqqqqLqxUVVVdWKmqqrqwUlVVdeEnj6k5BWSiZgfIBMhEzX8JkImaU0B21JwCMlHzkppvAjJRswPkBpAdNRMgO2omQP5LgEzUvAJkomYC5F+zUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF35ySc0OkImaHTUvqTkF5JSaCZBX1NwAsqPmFJCaqZkA2VHzEpCJmh0gEzU7QF5SMwHyipoJkB01p9RMgEzU7AA5peYTVqqqqi6sVFVVXVipqqq6sFJVVXVhpaqq6sJKVVXVhZ9cAvK3AnJKzQTIKTU7QF4C8pKaV4BMgJxSMwHyipoJkB0gEzWfoOaUmgmQHTWngNxQswPkbwXkJTUvAdlRc2qlqqrqwkpVVdWFlaqqqgsrVVVVF1aqqqou/OQxNRMgO2omQHbU3ACyA2SiZgfIRM2Omk9RcwrIJ6jZATIBckrNS2p2gEyA7KiZAJmoeQXIRM0OkL+ZmlNqTql5CcgpNd+0UlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF1aqqqou/OSSmh0gp4C8BGSiZgfI/wogEzWngOyomQD5BCATNTtAXlKzA2Si5iUgO2o+Qc0EyETNJwDZUfM3A/JNK1VVVRdWqqqqLqxUVVVdWKmqqrqwUlVVdeEnl4DsqPkEIBM1EyA7aiZAdtRMgOyomQDZUTNR8xKQU2p2gEzU7ACZqDkF5BPUvARkomYHyETNDpCJmleATNScUjMBsqPmJSA7am6o2QEyUbMDZKLmlZWqqqoLK1VVVRdWqqqqLqxUVVVdWKmqqrqwUlVVdeHX7z9yAcgpNZ8A5JSaCZBTal4BMlEzAbKjZgLklJpPADJRswPklJqXgOyomQCZqNkBMlGzA+SUmgmQl9ScAvIvUnMKyI6aCZAdNadWqqqqLqxUVVVdWKmqqrqwUlVVdWGlqqrqwq/ff+RDgOyomQDZUfMSkImaV4BM1OwAmah5CcgpNTtATqmZADmlZgLklJpTQE6pmQDZUfMJQE6pmQA5peYlIKfU7AC5oWYHyETNN61UVVVdWKmqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgu/fv+RC0BeUTMB8pKaU0D+RWo+AcgpNX8rIBM1O0AmanaATNRMgOyomQDZUTMB8glqTgGZqPkEIDtqbgDZUfO3WqmqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF379/iMfAmRHzSkgEzUTIDtqTgGZqNkBckrNBMhLanaAfIKaG0B21EyA7KiZANlRMwGyo2YCZKLmFJBTanaATNTsAJmoOQXklJqXgOyomQB5Sc0OkImaV1aqqqourFRVVV1YqaqqurBSVVV1YaWqqurCr99/5CEg/zVqTgHZUTMBsqNmAuQT1EyAvKJmAmSiZgfIt6nZATJRcwrIRM0pIKfUnAJySs1LQP5L1EyA7Kg5tVJVVXVhpaqq6sJKVVXVhZWqqqoLK1VVVRdWqqqqLvz6/Uf+YkB21LwE5BPUnAIyUTMBsqNmAuQT1OwA+RQ1rwA5pWYC5JSal4DsqJkA2VFzA8iOmgmQT1DzEpBTak4B2VFzaqWqqurCSlVV1YWVqqqqCytVVVUXVqqqqi785BKQV9S8BGSi5hU1EyA7QE6peQnIRM0rQE6pmQD5BCATNafU7ACZqHkJyI6aTwAyUTNRswNkomYHyETNDpBTQCZqXgLyTStVVVUXVqqqqi6sVFVVXVipqqq6sFJVVXVhpaqq6sJPHlMzAbID5CU1nwDklJoJkB0gEzUvAdlRc0rNKSATNaeAnFLzbUAmanaATNTsAJmoOaVmB8gNIDtqJkB21HyCmk9RcwrIKytVVVUXVqqqqi6sVFVVXVipqqq6sFJVVXXhJ48BmajZAXIKyKeo2QEyUbMD5JSavxmQU2q+DcgnANlRMwFySs0EyCkgO2q+DchEzQ6Ql4B8gpoJkB01n7BSVVV1YaWqqurCSlVV1YWVqqqqCytVVVUXVqqqqi785DE1p9R8G5BTaj4ByA01rwCZqNkBMgHyEpBvUnMKyETNKSCn1HwbkFNq/lZqJkBOAZmo+aaVqqqqCytVVVUXVqqqqi6sVFVVXVipqqq68JNLanaATNS8AuQlNd+mZgfIS0Amak4BeUXNS2pOATkFZKLmJSA7aiZATgHZUTMBsqNmAmSiZgfIRM03AflfsVJVVXVhpaqq6sJKVVXVhZWqqqoLK1VVVRdWqqqqLvz6/Uf+YkB21NwAckrNDpCJmlNAdtTcAPKKmpeA7Kh5CcgpNRMgO2peAjJRswPkJTWngJxScwrIRM0nAHlJzStAJmpeWamqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF379/iNfBmSiZgfIDTU7QF5S8wlAJmp2gJxScwrIRM0OkBtqTgE5pWYHyETNS0A+Qc0OkImaHSATNRMgO2peArKj5hSQiZoJkFNqvmmlqqrqwkpVVdWFlaqqqgsrVVVVF1aqqqou/OQSkFNqXlHzkppK1HwCkFNqJkB21LwE5NvUvALklJoJkB01EyCngLykZgfIRM2Omv8VK1VVVRdWqqqqLqxUVVVdWKmqqrqwUlVVdWGlqqrqwk8uqdkBMgGyo2YCZEfNBMhEzStAXlLzEpC/lZodIDfU7ACZqNkBMlHzCpCJmgmQHTUTIKeA7Kh5Sc0pIC8B2VEzAfKSmh0gp4CcUnNqpaqq6sJKVVXVhZWqqqoLK1VVVRdWqqqqLvz6/Uc+BMiOmlNAJmpOAZmoOQVkR80pIP8iNX8zIDtqJkB21LwEZKJmB8hEzQ6QiZpTQE6pmQDZUTMBsqPmE4DcUPMKkImaV1aqqqourFRVVV1YqaqqurBSVVV1YaWqqurCSlVV1YWfXAKyo+YT1EyAvATkFSATNafUvARkR80pIBM1O0BeUjNRswNkomYHyETNDpCJmgmQHTUTIK8AmajZATIB8glAJmo+Qc0nqJkA2VFzaqWqqurCSlVV1YWVqqqqCytVVVUXVqqqqi785IPU7AB5Sc0pIP81QE6pOQXkFJAdNTeA7ACZqDkFZEfNp6j5X6FmB8gnAJmoOQXkJTU7QD5hpaqq6sJKVVXVhZWqqqoLK1VVVRdWqqqqLqxUVVVd+MklNTtAJmo+AchEzTep+RQ1O0AmQHbUTNScArID5CU1EyA7av5XqJkA2VEzAXJKzSeomQA5BWRHzQTIKTUTIDtqJkBeWamqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgs/eUzNKTUTIKfUTICcUrMD5CUgp4BM1JxS87dS821AdtRMgOyomQCZqNkBcgrIRM0pNTtAXlLzbWpeUvOvWamqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF35yCcgpNa+omQCZqNkBckrNS2p2gNwAcgrIjppTQE6pmQA5peYlNTtAJmo+Qc0nAJmo2VHzEpCJmlNqdoCcAjJRMwGyo+ZvtVJVVXVhpaqq6sJKVVXVhZWqqqoLK1VVVRdWqqqqLvzkkppTQHbUTNTsAJmo+QQg/yI1LwE5pWYHyA01O0AmanaAfJuaCZAdNaeATNTsqHkJyCk1LwE5BWRHzUtAJmq+aaWqqurCSlVV1YWVqqqqCytVVVUXVqqqqi785C8A5JSaCZBTal5ScwrIKTXfpmYHyEtqPkHNBMgrQCZqXgLyCUBeUrMDZKJmB8i3AZmo2QEyAfJNK1VVVRdWqqqqLqxUVVVdWKmqqrqwUlVVdWGlqqrqwk8uAdlRM1GzA+QUkImaU0BOqTkFZKLmFJCJmh0gn6BmAuTbgOyoOaXmlJoJkImaHSATNTtATgF5Sc0pNRMgO2omQHbUTID8rdRMgLyyUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF379/iMXgOyomQDZUXMKyA01p4B8k5obQE6p2QEyUXMKyI6aCZBTaiZAdtScAjJRswPkU9ScAvKKmgmQiZpXgLykZgfIDTWngOyomQDZUXNqpaqq6sJKVVXVhZWqqqoLK1VVVRdWqqqqLqxUVVVd+MljQE4BOaXmb6ZmB8hEzUtqTgHZUTMB8i9S87dSMwHyCpBTaiZAdoBM1EyAnFKzo2YC5BPUTICcUnNKzSsrVVVVF1aqqqourFRVVV1YqaqqurBSVVV14SeX1PytgEzUnFLzTUAmaj4ByEtqdoC8BOS/Rs0pIDtqvg3IS0B21LwE5BSQU2pOAZmoeWWlqqrqwkpVVdWFlaqqqgsrVVVVF1aqqqourFRVVV34yX+QmlNATqk5pWYC5BSQU2pOqTkF5CU1p4BM1LwCZAJkR80EyETNK0Amaj5BzSkg36bmJSCngHzTSlVV1YWVqqqqCytVVVUXVqqqqi6sVFVVXfjJJSD/IjWfAOQVNRMgEzU7QF4CsqNmAmRHzQTIRM0rQCZqTql5Ccg3AZmo2QEyAXJKzQTINwGZqPkENRMgO2pOrVRVVV1YqaqqurBSVVV1YaWqqurCSlVV1YWVqqqqCz95TM23ATml5hSQiZpPUPMJQD4ByETNJ6j5BCA31HwCkH+Rmm9S8xKQiZodIBM1r6xUVVVdWKmqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgs/+SAgr6j5FwGZqDkFZKLmFTWngEzUnAIyUXMKyN9KzUtAdtScUjMBckrNKSCn1EzU7ACZAPk2IDtqJkB21JxaqaqqurBSVVV1YaWqqurCSlVV1YWVqqqqCz+p/y8gO2q+Tc0EyCtAJmpeATJR85KaTwCyo2YCZKJmB8gpIBM13wZkR80EyCkgp9R8ApCJmlNqXlmpqqq6sFJVVXVhpaqq6sJKVVXVhZWqqqoLK1VVVRd+Uv8XkJeAnALykpodIC8B+VupOQVkouaUmpeAfAKQHTXfBmSi5pSaHSCfAmRHzSkgp9ScWqmqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgs/+SA1fys1EyCn1OwAmajZAfIvUjMBsqNmAmSiZgfIRM2OmgmQHTUTIKfUnAJySs0nqJkAmajZAXIKyETNKSA7am6o2QEyUbOj5hNWqqqqLqxUVVVdWKmqqrqwUlVVdWGlqqrqwkpVVdWFnzwG5F8E5BSQT1AzATIBckrNDpCJmh0gL6mZADkFZEfNS2p2gNwAUm8B2VFzCsjfDMiOmlMrVVVVF1aqqqourFRVVV1YqaqqurBSVVV14dfvP1JVVXVopaqq6sJKVVXVhZWqqqoLK1VVVRdWqqqqLqxUVVVdWKmqqrqwUlVVdWGlqqrqwkpVVdWFlaqqqgsrVVVVF/4P+piTr1z/gpUAAAAASUVORK5CYII=" x="155" y="315" width="290" height="290" />
+
+  <!-- Notice -->
+  <text x="300" y="650" fill="#8C8C85" font-size="11" font-family="'JetBrains Mono', monospace" text-anchor="middle">OFFICIAL COMMUNITY PASS · 2026</text>
+
+  <!-- Divider -->
+  <line x1="56" y1="680" x2="544" y2="680" stroke="#E6E6DF" stroke-width="1" />
+
+  <!-- Event Details -->
+  <g transform="translate(56, 715)">
+    <text x="0" y="0" fill="#8C8C85" font-size="11" font-family="'JetBrains Mono', monospace">DATE &amp; TIME</text>
+    <text x="0" y="22" fill="#0A0A0A" font-size="14" font-weight="600">Saturday, October 24, 2026</text>
+  </g>
+
+  <g transform="translate(56, 775)">
+    <text x="0" y="0" fill="#8C8C85" font-size="11" font-family="'JetBrains Mono', monospace">VENUE</text>
+    <text x="0" y="22" fill="#0A0A0A" font-size="14" font-weight="600">Auditorium 01, Tech Innovation Center</text>
+  </g>
+
+  <!-- Footer -->
+  <rect x="56" y="828" width="488" height="26" rx="8" fill="#F2F2EC" />
+  <text x="300" y="845" fill="#55554F" font-size="10" font-family="'JetBrains Mono', monospace" text-anchor="middle" font-weight="600">SHOW THIS PASS AT CHECK-IN</text>
+</svg>

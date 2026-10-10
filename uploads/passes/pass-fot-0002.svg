@@ -1,0 +1,55 @@
+<svg width="600" height="900" viewBox="0 0 600 900" xmlns="http://www.w3.org/2000/svg" style="background:#FAFAF7; font-family:'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <!-- Background Canvas -->
+  <rect width="600" height="900" fill="#FAFAF7" />
+
+  <!-- Outer Card with 16px radius and hairline border -->
+  <rect x="24" y="24" width="552" height="852" rx="16" fill="#FFFFFF" stroke="#E6E6DF" stroke-width="1.5" />
+
+  <!-- Brand Header -->
+  <g transform="translate(56, 68)">
+    <text x="0" y="24" fill="#0A0A0A" font-size="28" font-weight="700" letter-spacing="-0.5">Friends of Tech<tspan fill="#C2E600">.</tspan></text>
+    <text x="0" y="44" fill="#8C8C85" font-size="12" font-weight="500">Presented by GenLab Pvt Ltd</text>
+  </g>
+
+  <!-- Ticket Code Monospace Box -->
+  <rect x="380" y="68" width="164" height="40" rx="8" fill="#F2F2EC" stroke="#E6E6DF" stroke-width="1" />
+  <text x="462" y="93" fill="#0A0A0A" font-size="14" font-weight="700" font-family="'JetBrains Mono', monospace" letter-spacing="1" text-anchor="middle">FOT-0002</text>
+
+  <!-- Divider Line -->
+  <line x1="56" y1="136" x2="544" y2="136" stroke="#E6E6DF" stroke-width="1" />
+
+  <!-- Attendee Details -->
+  <g transform="translate(56, 175)">
+    <text x="0" y="0" fill="#8C8C85" font-size="11" font-weight="700" font-family="'JetBrains Mono', monospace" letter-spacing="1">ATTENDEE PASS</text>
+    <text x="0" y="36" fill="#0A0A0A" font-size="28" font-weight="700" letter-spacing="-0.3">ajinth</text>
+  </g>
+
+  <!-- Category Badge -->
+  <rect x="56" y="235" width="190" height="34" rx="17" fill="#C2E600" />
+  <text x="151" y="257" fill="#0A0A0A" font-size="12" font-weight="700" letter-spacing="0.5" text-anchor="middle">TEAM · Team 01</text>
+
+  <!-- QR Code Tile -->
+  <rect x="140" y="300" width="320" height="320" rx="16" fill="#FFFFFF" stroke="#E6E6DF" stroke-width="1.5" />
+  <image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAAAklEQVR4AewaftIAABcaSURBVO3BQY4kSbYkQUmF7/j+R+V1/QR6NcAzDFSh1h5RLUR//vkrVVVVm1aqqqoOrFRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YGVqqqqAytVVVUHVqqqqg6sVFVVHVipqqo6sFJVVXXgkwNAfgs1EyATNTuAPFHzJiATNf9mQCZqdgD5FjUTILvUTIBM1OwAskPNEyA71EyATNRMgDxRMwGyQ80EyG+hZsdKVVXVgZWqqqoDK1VVVQdWqqqqDqxUVVUd+OQiNd8CZIeaG9Q8ATJR8yYgT9RMgEzU7AAyUfMEyETNDiATNbeo2QFkAmSiZgLkCZCJmh1AJmomQHapmQCZAJmomQD5LdR8C5AbVqqqqg6sVFVVHVipqqo6sFJVVXVgpaqq6sAn/wVAblHzJiATNbcAmaj5aYBM1OwAcouaCZAJkB1qdgG5AchEzbcAmaj5FiA71DwB8pMAuUXNm1aqqqoOrFRVVR1YqaqqOrBSVVV1YKWqqurAJ/+jgLxNzQTIBMgNam5Rs0PNBMguIBM1EzU3ALlFzQTIRM0uIBM1N6jZAeSJmomaCZCJmh1AdqmZAKn/WKmqqjqwUlVVdWClqqrqwEpVVdWBlaqqqgOf1P9DzQTIRM0TIBM1O4C8Tc0OIBM1u9RMgEyATNRMgPw0aiZAJmp2AXkTkF1AJmomaiZAdqh5AmQCZKKm/mOlqqrqwEpVVdWBlaqqqgMrVVVVB1aqqqoOrFRVVR345L9AzW8BZKLmFiATNTvU3AJkomYHkF1AJmrepOYWIBMgEzUTNRMgT9RMgOxQMwFyi5oJkImaiZodQHap+QY1v8VKVVXVgZWqqqoDK1VVVQdWqqqqDqxUVVUd+OQiIL+dmgmQiZpdaiZAJmomQCZqngCZqJkAmaiZAJmoeQJkB5CJmhuAPFGzQ80EyETN29RMgEzUTIBM1DwBMlEzATJRMwEyUfMEyA4gEzU7gPx2K1VVVQdWqqqqDqxUVVUdWKmqqjqwUlVVdeCTA2rq5wLyRM0EyA4gO4A8UTMBMlEzAXKDmm8BsgvIRM0EyETNDjUTILuATNRMgOwAsgvIRM0ONf9WK1VVVQdWqqqqDqxUVVUdWKmqqjqwUlVVdeDPP39lE5CJmhuAPFEzAfImNRMgb1MzAXKLmh1AJmreBuS3UzMBskvNDiATNW8D8g1qngD57dTsADJRs2OlqqrqwEpVVdWBlaqqqgMrVVVVB1aqqqoOfHJAzZvU7FIzAbJDzQ41T4DsUPM2NRMgO9RMgOxSMwEyUTMBMlEzATJR8wTIbwHkBiA71NyiZgJkouZtaiZA3qZmAmSi5k0rVVVVB1aqqqoOrFRVVR1YqaqqOrBSVVV14M8/f2UTkB1qJkB+GjU/DZCJml1AblAzATJR8wTIRM0EyETNBMhEzQTILjV1DsgONRMgu9TsAPImNU+A7FDzppWqqqoDK1VVVQdWqqqqDqxUVVUdWKmqqjrwyQE1O4C8Tc2/lZoJkFvUTIBMgEzU/HZqngDZAWSiZgJkomYXkImaCZCJmh1AnqjZoWYC5FvU7AAyUbNLzQTIBMhEzQ0rVVVVB1aqqqoOrFRVVR1YqaqqOrBSVVV1YKWqqurAJweATNTsUDMBsgvIm9RMgNyiZoeaCZBb1OwAskvNm9R8i5obgDxRswPIRM0OIBM1T4D8WwG5AcgTNRM1EyBvWqmqqjqwUlVVdWClqqrqwEpVVdWBlaqqqgOfXARkB5BdanYAmajZAWSi5gmQn0bNDiATNTvU7AKyA8gONbvU7AAyUTNRMwHyLUB+GjUTIBM1T4DsUHMDkF1AJmp2AJmo2bFSVVV1YKWqqurASlVV1YGVqqqqAytVVVUHPjmg5gYgEzVPgPx2anYA2aHmCZCJmhvU7AIyUbMDyETNBMgtat6kZpeaCZAJkB1qdqmZAJkAmajZAeSJmhvU7AAyUXOLmjetVFVVHVipqqo6sFJVVXVgpaqq6sBKVVXVgU8uAjJR8zY1EyA3qJkAeaJmAmSHmgmQCZAnanaouQHIEzU3qJkAmaj5aYBM1DwBMlFzg5oJkImatwGZqNkF5AY1EyATNbcAuUHNjpWqqqoDK1VVVQdWqqqqDqxUVVUdWKmqqjrwyQEgEzUTILeomQCZqLkByC4gEzUTIDeoeQJkouYGILuATNRMgOxQU+eAfIuaCZDfQs0OIE/UTNRMgEzU3LBSVVV1YKWqqurASlVV1YGVqqqqAytVVVUH/vzzV14GZKJmAmSXmgmQHWp2AHmbmluATNTcAGSiZheQiZobgHyLmrcBmaiZAHmbmgmQiZobgNyiZgJkh5pdQCZqvmGlqqrqwEpVVdWBlaqqqgMrVVVVB1aqqqoOrFRVVR34889f2QRkouZtQHaomQDZoWYC5ImaCZCJmrcBuUHNLUBuUPM2IBM1bwLyRM2bgLxNzQTIRM0EyNvUTIDcoGYXkImaN61UVVUdWKmqqjqwUlVVdWClqqrqwEpVVdWBTw6omQCZqNkBZJeaCZAdam4BcgOQiZoJkF1qJkAmQCZqJkB2qZkA2QFkouZbgOxQ8wTIRM2b1OwCMgEyUTMBskPNEyATNTvU/DRAdqjZsVJVVXVgpaqq6sBKVVXVgZWqqqoDK1VVVQc++YHU7AIyUXMDkImaXUBuADJRc4uaCZAJkImaW9RMgEzU7AByC5CJmgmQCZBdQHao2QFkomaXmjcBeaJmB5CJmgmQiZoJkN9ipaqq6sBKVVXVgZWqqqoDK1VVVQdWqqqqDnxyAMibgOxS8yY1EyBvUzMBMgHyRM0EyETNtwC5AchEzS41EyA3qLkFyETNBMhEzQTIBMgTNRMgEzUTNRMgEzVPgOxQMwGyA8guNTcAuWGlqqrqwEpVVdWBlaqqqgMrVVVVB1aqqqoOfHJAzQ4gt6iZAJmo+WnU/K8B8kTNT6LmCZCJmh1Adqh5AuQGNb+dmm9RMwEyUTMB8gTIRM0ONTesVFVVHVipqqo6sFJVVXVgpaqq6sBKVVXVgU8OAJmomaiZALlFzQ4g3wJkh5qJml1AJmomQHaomQC5Rc0NQCZqnqiZAJmomaiZAHkbkImaG9TsUnMDkF1qJkAmQL5FzQTIDWp2rFRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YGVqqqqA59cBGSiZqJmAmQXkB1qJkAmaiZAnqi5Aci3qJkAmQCZqHkCZKJmAmSiZgJkB5Anam4AsgPILjUTIDeo2QVkomYC5LdQMwFyC5AdaiZAblipqqo6sFJVVXVgpaqq6sBKVVXVgZWqqqoDn/xAanapmQDZoeYWIDvUTNTsAPJEzTcAeaLmBiA/DZC3qXkTkImaCZAnaiZAdqi5BcgONRMgO4DsUrMDyETNDStVVVUHVqqqqg6sVFVVHVipqqo6sFJVVXXgzz9/ZROQN6l5AuRNaiZAJmqeAPkGNU+ATNTcAORb1Pw0QG5QcwuQiZoJkImaXUC+Qc0uIDvU7AAyUfNbrFRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YFPDqiZAJmo2QFkl5oJkJ9GzQTIDUC+Rc0uIBM1O4DsULMLyETNRM0EyETNBMjbgNwA5ImaCZCJmgmQiZq3qdkBZAeQJ2omQCZqJkAmanasVFVVHVipqqo6sFJVVXVgpaqq6sBKVVXVgT///JVNQCZqJkAmaiZAvkXNBMgtan4aIBM1O4DsUrMDyG+h5gYgT9RMgOxQ8zYgO9RMgNyiZgeQb1GzA8hEzQ0rVVVVB1aqqqoOrFRVVR1YqaqqOrBSVVV14JOLgEzUTIDsUnMDkLepmQC5Qc0tam5QMwHyBMhEzUTNBMgONbcAmQCZqJkA+RYgN6j5adQ8ATJRs0PNDUCeANmhZgJkombHSlVV1YGVqqqqAytVVVUHVqqqqg6sVFVVHfjkgJob1EyA7AIyUbMDyC1AdqiZAJkAmah5AuRNaiZqngCZAJmoeROQJ2puADJRMwHyBMhEzQ4gEzW3qJkA+bcCMlFzi5odam5YqaqqOrBSVVV1YKWqqurASlVV1YGVqqqqAytVVVUHPrkIyETNBMgtam5QcwuQiZoJkB1qblHzLWomQL5BzU+jZheQiZqJmh1Adqn5LYDcoOYWNRMgEzVvWqmqqjqwUlVVdWClqqrqwEpVVdWBlaqqqgN//vkrLwMyUTMB8i1qdgB5omYCZKJmB5BdaiZA3qTmFiATNRMg36JmAuQWNRMgEzU7gOxQ8wTIRM0EyNvUTID8dmretFJVVXVgpaqq6sBKVVXVgZWqqqoDK1VVVQc++S9QMwEyUfMEyETNBMgOIBM1EzVvAzJRswvIRM2bgLwNyE8DZKLmW4BM1HwLkImaCZAdap4A2aFmB5CJmgmQ32KlqqrqwEpVVdWBlaqqqgMrVVVVB1aqqqoO/Pnnr2wCskPNDiC3qJkAeZuaCZAdaiZAJmq+BchEzS4gP42aCZCJmgmQHWqeANmhZgJkh5pdQG5Q8zYgO9TcAOSJmgmQiZo3rVRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YFP/guA3KJmB5CJmgmQW4DsUPM2IBM1O4DsALJLzU8DZKJmAmSHmlvU3KBmB5AnanYAuQHIEzU71EyA7FAzUfNbrFRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YFPLlKzA8guIDcAmaiZAPk3ULMDyA1qbgEyUbMDyC1A3gTkiZob1EyATNTsAvImILeoeROQiZrfYqWqqurASlVV1YGVqqqqAytVVVUHVqqqqg6sVFVVHfjzz1+5BMgNap4AmaiZANmh5hYgEzUTIBM1twCp/1AzAfJEzQ4gEzUTILvUTIDsUDMBskPNEyA71EyA7FDzBMhEzQTIRM0NQJ6omQC5Qc2OlaqqqgMrVVVVB1aqqqoOrFRVVR1YqaqqOvDnn7/yJUAmap4A2aFmB5CJml1AJmp2ANmh5hYgN6h5AmSiZgeQG9TsAvImNU+ATNRMgLxJzS1Adqi5BcgONd8CZKJmAmSiZsdKVVXVgZWqqqoDK1VVVQdWqqqqDqxUVVUd+OQAkB1qJmpuUTMBcgOQiZonaiZA3gTkbWpuUTMBMlFzg5oJkF1q3gTkiZoJkDepmQDZpeZbgOxQswPIRM0EyBM1O4BM1NywUlVVdWClqqrqwEpVVdWBlaqqqgMrVVVVB/7881cuAbJDzQTIEzUTIDeo+RYgO9RMgDxRMwHyb6VmB5AnaiZAblAzAbJLzQTIRM0EyNvUTIDcoOYWIBM1O4BM1LwNyETNjpWqqqoDK1VVVQdWqqqqDqxUVVUdWKmqqjrwyRcB2QVkomYHkB1A/g2ATNRMgNyg5gmQiZoJkImaCZAdanapmQCZqNmhZheQn0bNBMhEzQTIRM0uIBM1b1IzAfJEzQ1qblipqqo6sFJVVXVgpaqq6sBKVVXVgZWqqqoDf/75K5uAfIuaCZAdanYA2aVmAmSHmgmQn0bNtwDZoWYC5ImaCZA3qXkCZKJmAmSHmgmQW9RMgEzUTIB8i5q3Admh5k0rVVVVB1aqqqoOrFRVVR1YqaqqOrBSVVV14M8/f+VLgEzUvA3IDjW7gPw0at4EZJeaCZAb1EyA3KJmAuRtam4AskPNBMgTNRMgO9TsALJLzQ4gEzU7gDxRMwGyQ80NK1VVVQdWqqqqDqxUVVUdWKmqqjqwUlVVdWClqqrqwJ9//srLgEzU3AJkouZNQJ6o2QFkomYCZKLmCZCJmgmQiZpvAfItaiZAdqiZANmlZgJkh5oJkB1qngDZoWYCZIeaJ0AmanYA2aFmF5CJmh1AJmp2rFRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YFPDgCZqJmoeZuaG4DsUPM2IBM1EyBP1EyATNRMgEzUTIC8Tc1Po2aHml1AdqiZAJmomQC5Rc0NaiZAbgEyUTMBsgPIEzUTIBM1EzU3rFRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YFPDqi5AchPo2YHkFvU/HZAJmqeANmhZgJkomYHkF1qdgB5m5oJkBvUTIA8UbMDyA4gEzW3qNmhZgJkF5CJmm9YqaqqOrBSVVV1YKWqqurASlVV1YGVqqqqA59cBGSHml1AJmreBGSi5gmQiZobgOwCMlEzAbJDzQTIEzUTIDcA+RYgP42abwGyQ80EyA4gu9RMgNygZgLkiZoJkBvU7Fipqqo6sFJVVXVgpaqq6sBKVVXVgZWqqqoDn1yk5m1qJkAmar5FzQ1AJmomQJ6omQCZqNkBZKLmCZCJmgmQiZoJkB1qngCZAJmomQD5FiATNRMgb1MzAfLTqNkBZAJkouYWNW9aqaqqOrBSVVV1YKWqqurASlVV1YGVqqqqA59cBGSHmgmQJ2omaiZAblAzAfJEzQTIDjW/HZBdQCZqJkB2qJkAeaJmB5CJmgmQXWomQH4LIBM1EyA71DwBMgEyUbNDzQ4gT9T8JCtVVVUHVqqqqg6sVFVVHVipqqo6sFJVVXVgpaqq6sAnF6mZAJkA2QVkh5pvATJRMwHyNiATNRMgb1MzAXKDmh1q3gbkpwGyQ80EyBM1EyA71OwA8kTNT6LmCZCJmm9YqaqqOrBSVVV1YKWqqurASlVV1YGVqqqqA58cAHKDmgmQJ2r+rdT8NGpuALJLzQTIRM0OIBM1T4DsUDMBMlFzi5odQCZqdqh5AmSiZgJkouZbgHyLmgmQiZoJkImaHStVVVUHVqqqqg6sVFVVHVipqqo6sFJVVXXgky8CMlGzC8gONRMgEzUTNbuAfIuaHUAmaiZAJmqeAHkTkB1AbgGyA8guNTuATNTsADJRswvIDiA71PwvAvKmlaqqqgMrVVVVB1aqqqoOrFRVVR1YqaqqOvDJATU/jZodQG4A8kTNRM0EyG8BZKJmAmSXmh1Adqi5BcgONTuA7AIyUbMDyC1qJkAmat4G5AY1NwB5AmSiZgeQG1aqqqoOrFRVVR1YqaqqOrBSVVV1YKWqqurAJweA/BZqdqiZANkFZIeaHUAmar4FyC41EyDfAOSJmh1qJkAmaiZqdql5k5oJkF1qJkDepmYC5AYgEzW71Nyg5oaVqqqqAytVVVUHVqqqqg6sVFVVHVipqqo68MlFar4FyA41EyATNRMgu9R8C5CJmhvU3KJmAmSiZgJkh5pbgEzUTIBM1DwBMlEzAfImNd+iZheQN6l5G5CJmgmQiZodK1VVVQdWqqqqDqxUVVUdWKmqqjqwUlVVdeCT/wIgt6i5AchEzQTIRM0uIBM1EyATNbcA2aFmB5AnaiZA3gSk/v/U/C9SMwEyAfI2ID/JSlVV1YGVqqqqAytVVVUHVqqqqg6sVFVVHVipqqo68Mn/KDXfomaHmh1AdqmZAJkAmajZBWSiZgeQb1EzAbJDzS41EyATNRMgO4DsUjMBMlHzb6XmFiDfsFJVVXVgpaqq6sBKVVXVgZWqqqoDK1VVVQc+qR8PyETNRM0TIDeo2aFmF5DfAsibgDxRc4OatwGZqLkByETNt6i5BchEzQTIRM0NK1VVVQdWqqqqDqxUVVUdWKmqqjqwUlVVdeCT/wI1vwWQHUCeqJkAmai5AcguIBM1NwDZpWYCZIeaCZBdanYAmQCZqNkFZKLmBiATNbuATIDcoOZb1OwAMlHzRM0EyDesVFVVHVipqqo6sFJVVXVgpaqq6sBKVVXVgU8uAvJbAJmomQC5Rc0EyETNDjVPgNwAZIeaJ0B2qJkA2aHmFiA71HwLkImaG4DcomYCZAJkomYXkImaHUB+GiATNTtWqqqqDqxUVVUdWKmqqjqwUlVVdWClqqrqwJ9//kpVVdWmlaqqqgMrVVVVB1aqqqoOrFRVVR1YqaqqOrBSVVV1YKWqqurASlVV1YGVqqqqAytVVVUHVqqqqg78H6nuu5SfrUaFAAAAAElFTkSuQmCC" x="155" y="315" width="290" height="290" />
+
+  <!-- Notice -->
+  <text x="300" y="650" fill="#8C8C85" font-size="11" font-family="'JetBrains Mono', monospace" text-anchor="middle">OFFICIAL COMMUNITY PASS · 2026</text>
+
+  <!-- Divider -->
+  <line x1="56" y1="680" x2="544" y2="680" stroke="#E6E6DF" stroke-width="1" />
+
+  <!-- Event Details -->
+  <g transform="translate(56, 715)">
+    <text x="0" y="0" fill="#8C8C85" font-size="11" font-family="'JetBrains Mono', monospace">DATE &amp; TIME</text>
+    <text x="0" y="22" fill="#0A0A0A" font-size="14" font-weight="600">Saturday, October 24, 2026</text>
+  </g>
+
+  <g transform="translate(56, 775)">
+    <text x="0" y="0" fill="#8C8C85" font-size="11" font-family="'JetBrains Mono', monospace">VENUE</text>
+    <text x="0" y="22" fill="#0A0A0A" font-size="14" font-weight="600">Auditorium 01, Tech Innovation Center</text>
+  </g>
+
+  <!-- Footer -->
+  <rect x="56" y="828" width="488" height="26" rx="8" fill="#F2F2EC" />
+  <text x="300" y="845" fill="#55554F" font-size="10" font-family="'JetBrains Mono', monospace" text-anchor="middle" font-weight="600">SHOW THIS PASS AT CHECK-IN</text>
+</svg>

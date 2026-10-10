@@ -53,7 +53,9 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
       }
     }
 
-    if (res.status === 404) {
+    if (res.status === 405) {
+      errorMessage = 'Backend API server is not running or not connected (405 Method Not Allowed). Please deploy your backend and set VITE_API_URL or backend proxy in vercel.json.';
+    } else if (res.status === 404) {
       errorMessage = 'Backend API server endpoint not found (404). Please ensure the backend server is deployed and connected.';
     }
 

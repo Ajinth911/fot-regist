@@ -164,6 +164,11 @@ export const api = {
       method: 'POST',
     }),
 
+  purgeAllData: () =>
+    request<{ success: boolean; message: string }>('/api/registrations/purge-all', {
+      method: 'POST',
+    }),
+
   // Scanner Verification
   verifyScan: (payload: { token?: string; manualCode?: string }) =>
     request<ScannerScanResult>('/api/scanner/verify', {

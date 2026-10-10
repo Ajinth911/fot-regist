@@ -5,7 +5,7 @@ import { upload } from '../middleware/uploader';
 import { TokenService } from '../services/tokenService';
 import { CardGenerator } from '../services/cardGenerator';
 import { EmailService } from '../services/emailService';
-import { syncRegistrationToSupabase } from '../db/supabase';
+import { syncRegistrationToSupabase, supabase } from '../db/supabase';
 
 const router = Router();
 
@@ -569,6 +569,39 @@ router.post('/attendees/:id/resend-email', requireAdmin, async (req: Request, re
   } catch (err: unknown) {
     console.error('Resend email error:', err);
     res.status(500).json({ error: 'Failed to resend pass email.' });
+  }
+});
+
+// POST /api/registrations/purge-all (Admin Protected - Reset all test attendee and registration data)
+router.post('/purge-all', requireAdmin, async (_req: Request, res: Response): Promise<void> => {
+  try {
+    const transaction = db.transaction(() => {
+      db.exec('DELETE FROM check_ins');
+      db.exec('DELETE FROM attendees');
+      db.exec('DELETE FROM registrations');
+      db.exec('DELETE FROM users');
+    });
+    transaction();
+
+    // Mirror purge to Supabase if configured
+    if (supabase) {
+      try {
+        await supabase.from('check_ins').delete().neq('id', 0);
+        await supabase.from('attendees').delete().neq('id', '');
+        await supabase.from('registrations').delete().neq('id', '');
+        await supabase.from('users').delete().neq('id', '');
+      } catch (sbErr) {
+        console.warn('[SUPABASE PURGE WARNING]', sbErr);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'All test registrations, attendees, users, and check-in records have been permanently cleared.',
+    });
+  } catch (err: unknown) {
+    console.error('Purge error:', err);
+    res.status(500).json({ error: 'Failed to purge data.' });
   }
 });
 

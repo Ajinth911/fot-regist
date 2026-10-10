@@ -145,13 +145,20 @@ CREATE POLICY "Service role has full access to users"
 
 -- TABLE: registrations
 -- Public / Anon has ZERO read or write access to registrations table
--- Prevents scraping of payer PII, payment receipts, phone numbers, and UTRs
+-- Only service_role can perform administrative updates/inserts
 CREATE POLICY "Service role has full access to registrations"
   ON public.registrations
   FOR ALL
   TO service_role
   USING (true)
   WITH CHECK (true);
+
+-- Authenticated Attendees can ONLY read their own registrations matching their verified email
+CREATE POLICY "Attendees can view their own registrations"
+  ON public.registrations
+  FOR SELECT
+  TO authenticated
+  USING (LOWER(payer_email) = LOWER(auth.jwt() ->> 'email'));
 
 -- TABLE: attendees
 -- Public / Anon has ZERO read or write access to attendees table
@@ -162,6 +169,13 @@ CREATE POLICY "Service role has full access to attendees"
   TO service_role
   USING (true)
   WITH CHECK (true);
+
+-- Authenticated Attendees can ONLY read their own ticket passes matching their verified email
+CREATE POLICY "Attendees can view their own ticket passes"
+  ON public.attendees
+  FOR SELECT
+  TO authenticated
+  USING (LOWER(email) = LOWER(auth.jwt() ->> 'email'));
 
 -- TABLE: check_ins
 -- Public / Anon has ZERO access to check-in logs

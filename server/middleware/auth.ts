@@ -34,8 +34,15 @@ export function requireAdmin(req: AuthenticatedRequest, res: Response, next: Nex
 
   try {
     const secret = getJwtSecret();
-    const decoded = jwt.verify(token, secret) as { id: number; email: string };
-    req.admin = decoded;
+    const decoded = jwt.verify(token, secret) as { id: number; email: string; role?: string };
+
+    // Zero-Trust: Strictly verify administrator role claim
+    if (decoded.role !== 'admin' && decoded.role !== 'super_admin') {
+      res.status(403).json({ error: 'Forbidden. Administrator privileges required.' });
+      return;
+    }
+
+    req.admin = { id: decoded.id, email: decoded.email };
     next();
   } catch (err: unknown) {
     if (err instanceof Error && err.message.includes('[SECURITY FATAL]')) {
@@ -56,8 +63,15 @@ export function requireUser(req: AuthenticatedUserRequest, res: Response, next: 
 
   try {
     const secret = getJwtSecret();
-    const decoded = jwt.verify(token, secret) as { id: string; email: string; name: string };
-    req.user = decoded;
+    const decoded = jwt.verify(token, secret) as { id: string; email: string; name: string; role?: string };
+
+    // Zero-Trust: Strictly verify user or admin account
+    if (decoded.role !== 'user' && decoded.role !== 'admin') {
+      res.status(403).json({ error: 'Forbidden. User account required.' });
+      return;
+    }
+
+    req.user = { id: decoded.id, email: decoded.email, name: decoded.name };
     next();
   } catch (err: unknown) {
     if (err instanceof Error && err.message.includes('[SECURITY FATAL]')) {

@@ -140,16 +140,24 @@ export function initDatabase() {
 
   // Seed default Admin if not exists
   const initialAdminEmail = process.env.ADMIN_EMAIL?.trim() || 'admin@fot.org';
-  const initialAdminPassword = process.env.ADMIN_PASSWORD?.trim() || 'fotadmin2026';
+  let initialAdminPassword = process.env.ADMIN_PASSWORD?.trim();
+
+  if (!initialAdminPassword) {
+    if (process.env.NODE_ENV === 'production') {
+      // Zero-Trust: Never use static fallback credentials in production
+      const crypto = require('crypto');
+      initialAdminPassword = crypto.randomBytes(16).toString('hex');
+      console.warn(`[SECURITY ALERT] Production started without ADMIN_PASSWORD. Generated temporary password: ${initialAdminPassword}`);
+    } else {
+      initialAdminPassword = 'fotadmin2026';
+    }
+  }
 
   const existingAdmin = db.prepare('SELECT * FROM admins WHERE email = ?').get(initialAdminEmail);
   if (!existingAdmin) {
     const salt = bcrypt.genSaltSync(12);
     const hash = bcrypt.hashSync(initialAdminPassword, salt);
     db.prepare('INSERT INTO admins (email, password_hash) VALUES (?, ?)').run(initialAdminEmail, hash);
-    if (!process.env.ADMIN_PASSWORD) {
-      console.warn('[SECURITY WARNING] Initial admin seeded with default password. Set ADMIN_EMAIL and ADMIN_PASSWORD in .env for production.');
-    }
     console.log(`[DB] Seeded initial admin account: ${initialAdminEmail}`);
   }
 

@@ -27,6 +27,12 @@ setInterval(() => {
   }
 }, 15 * 60 * 1000).unref();
 
+// Precomputed dummy bcrypt hash for constant-time comparison on nonexistent accounts
+const DUMMY_HASH = '$2a$12$e80y6mN2hY5059s79Yp6ve8sJ7hK7.46x7435qfC1Ym3u49iS1Gqa';
+
+// Rate limit tracker for forgot password
+const forgotPasswordAttempts = new Map<string, { count: number; lastAttempt: number }>();
+
 router.post('/login', (req: Request, res: Response): void => {
   const { email, password } = req.body;
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
@@ -43,9 +49,14 @@ router.post('/login', (req: Request, res: Response): void => {
     return;
   }
 
-  const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(email) as { id: number; email: string; password_hash: string } | undefined;
+  const cleanEmail = String(email).trim().toLowerCase();
+  const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(cleanEmail) as { id: number; email: string; password_hash: string } | undefined;
 
-  if (!admin || !bcrypt.compareSync(password, admin.password_hash)) {
+  // Constant-time execution to prevent timing-based user enumeration
+  const hashToCompare = admin ? admin.password_hash : DUMMY_HASH;
+  const isMatch = bcrypt.compareSync(password, hashToCompare);
+
+  if (!admin || !isMatch) {
     const currentCount = (attempt?.count || 0) + 1;
     failedAttempts.set(ip, { count: currentCount, lastAttempt: Date.now() });
     res.status(401).json({ error: 'Invalid credentials. Access denied.' });
@@ -95,23 +106,29 @@ router.post('/logout', (req: Request, res: Response): void => {
 });
 
 router.post('/forgot-password', (req: Request, res: Response): void => {
+  const ip = req.ip || req.socket.remoteAddress || 'unknown';
+  const fpAttempt = forgotPasswordAttempts.get(ip);
+  if (fpAttempt && fpAttempt.count >= 5 && Date.now() - fpAttempt.lastAttempt < 15 * 60 * 1000) {
+    res.status(429).json({ error: 'Too many password reset requests. Please wait 15 minutes.' });
+    return;
+  }
+
   const { email } = req.body;
   if (!email) {
     res.status(400).json({ error: 'Email address is required.' });
     return;
   }
 
-  const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(email) as { id: number; email: string } | undefined;
-  // Always respond with success message to avoid user enumeration
-  if (!admin) {
-    res.json({ success: true, message: 'If an account matches this email, password reset instructions have been sent.' });
-    return;
-  }
+  const currentCount = (fpAttempt?.count || 0) + 1;
+  forgotPasswordAttempts.set(ip, { count: currentCount, lastAttempt: Date.now() });
 
-  // In production this would email a secure reset link. For seed/demo we confirm dispatch.
+  const cleanEmail = String(email).trim().toLowerCase();
+  const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(cleanEmail) as { id: number; email: string } | undefined;
+  
+  // Constant execution - always respond with generic success message to prevent user enumeration
   res.json({
     success: true,
-    message: `Password reset link dispatched to ${email}. Check your inbox.`,
+    message: 'If an account matches this email, password reset instructions have been sent.',
   });
 });
 
@@ -220,7 +237,11 @@ router.post('/user/login', (req: Request, res: Response): void => {
 
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(cleanEmail) as UserRow | undefined;
 
-  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
+  // Constant-time execution to prevent timing-based attendee enumeration
+  const hashToCompare = user ? user.password_hash : DUMMY_HASH;
+  const isMatch = bcrypt.compareSync(password, hashToCompare);
+
+  if (!user || !isMatch) {
     const currentCount = (attempt?.count || 0) + 1;
     userLoginAttempts.set(ip, { count: currentCount, lastAttempt: Date.now() });
     res.status(401).json({ error: 'Invalid email or password. Please try again.' });

@@ -8,6 +8,8 @@ export class ApiError extends Error {
   }
 }
 
+const API_BASE_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   const defaultHeaders: Record<string, string> = {
     Accept: 'application/json',
@@ -26,7 +28,9 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
     defaultHeaders['Authorization'] = `Bearer ${token}`;
   }
 
-  const res = await fetch(url, {
+  const targetUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
+
+  const res = await fetch(targetUrl, {
     ...options,
     headers: {
       ...defaultHeaders,
@@ -38,7 +42,22 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new ApiError(data.error || data.message || `Request failed with status ${res.status}`, res.status);
+    let errorMessage = `Request failed with status ${res.status}`;
+    if (data) {
+      if (typeof data.error === 'string') {
+        errorMessage = data.error;
+      } else if (data.error && typeof data.error === 'object') {
+        errorMessage = data.error.message || data.error.code || JSON.stringify(data.error);
+      } else if (typeof data.message === 'string') {
+        errorMessage = data.message;
+      }
+    }
+
+    if (res.status === 404) {
+      errorMessage = 'Backend API server endpoint not found (404). Please ensure the backend server is deployed and connected.';
+    }
+
+    throw new ApiError(errorMessage, res.status);
   }
 
   return data as T;

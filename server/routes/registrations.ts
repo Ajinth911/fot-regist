@@ -68,9 +68,20 @@ router.post('/', upload.single('screenshot'), (req: Request, res: Response): voi
     }
 
     const payerName = String(rawPayerName).trim().slice(0, 120);
-    const payerEmail = String(rawPayerEmail).trim().slice(0, 120);
+    const payerEmail = String(rawPayerEmail).trim().toLowerCase().slice(0, 120);
     const payerPhone = String(rawPayerPhone).trim().slice(0, 25);
     const utrNumber = rawUtrNumber ? String(rawUtrNumber).trim().slice(0, 60) : null;
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payerEmail)) {
+      res.status(400).json({ error: 'Please enter a valid primary contact email address.' });
+      return;
+    }
+
+    const cleanPayerPhone = payerPhone.replace(/\D/g, '').slice(-10);
+    if (cleanPayerPhone.length !== 10) {
+      res.status(400).json({ error: 'Please enter a valid 10-digit contact phone number.' });
+      return;
+    }
 
     let parsedAttendees: AttendeePayload[] = [];
     try {

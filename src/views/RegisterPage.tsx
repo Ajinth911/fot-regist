@@ -132,7 +132,11 @@ export const RegisterPage: React.FC = () => {
       }
     } catch (err: unknown) {
       console.error('Submission error:', err);
-      setSubmitError((err as Error).message || 'Server error while submitting registration.');
+      const errObj = err as Record<string, unknown>;
+      const msg = typeof errObj?.message === 'string'
+        ? errObj.message
+        : (typeof err === 'string' ? err : 'Server error while submitting registration.');
+      setSubmitError(msg);
     } finally {
       setIsSubmitting(false);
     }

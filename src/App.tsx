@@ -1,14 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
-import { UserAuthProvider } from './hooks/useUserAuth';
-import { HomePage } from './views/HomePage';
 import { RegisterPage } from './views/RegisterPage';
 import { SuccessPage } from './views/SuccessPage';
 import { TermsPage } from './views/TermsPage';
 import { PrivacyPage } from './views/PrivacyPage';
-import { LoginPage } from './views/LoginPage';
-import { SignUpPage } from './views/SignUpPage';
-import { UserDashboardPage } from './views/UserDashboardPage';
 import { AdminLoginPage } from './views/AdminLoginPage';
 import { AdminDashboardPage } from './views/AdminDashboardPage';
 
@@ -41,30 +36,23 @@ function ProtectedAdminRoute() {
 export function App() {
   return (
     <AuthProvider>
-      <UserAuthProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/register/success" element={<SuccessPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
+      <BrowserRouter>
+        <Routes>
+          {/* Public routes - Direct Registration Only */}
+          <Route path="/" element={<RegisterPage />} />
+          <Route path="/register" element={<Navigate to="/" replace />} />
+          <Route path="/register/success" element={<SuccessPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
 
-            {/* Attendee / User Auth & Dashboard */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignUpPage />} />
-            <Route path="/dashboard" element={<UserDashboardPage />} />
+          {/* Admin routes */}
+          <Route path="/admin/login" element={<AdminLoginPage />} />
+          <Route path="/admin/*" element={<ProtectedAdminRoute />} />
 
-            {/* Admin routes */}
-            <Route path="/admin/login" element={<AdminLoginPage />} />
-            <Route path="/admin/*" element={<ProtectedAdminRoute />} />
-
-            {/* Fallback route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
-      </UserAuthProvider>
+          {/* Any other URL redirects to registration */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
     </AuthProvider>
   );
 }

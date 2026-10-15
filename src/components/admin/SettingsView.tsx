@@ -15,26 +15,26 @@ export const SettingsView: React.FC = () => {
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailResult, setEmailResult] = useState<{ success: boolean; message: string } | null>(null);
 
-  // Purge State
-  const [purging, setPurging] = useState(false);
-  const [purgeResult, setPurgeResult] = useState<string | null>(null);
+  // Reset State
+  const [resetting, setResetting] = useState(false);
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const [resetResult, setResetResult] = useState<string | null>(null);
+  const [resetError, setResetError] = useState<string | null>(null);
 
-  const handlePurgeAllData = async () => {
-    const confirmed = window.confirm(
-      'Are you sure you want to permanently wipe all test registrations, attendees, attendee user accounts, and check-ins? Event configuration and Admin logins will NOT be deleted.'
-    );
-    if (!confirmed) return;
-
-    setPurging(true);
-    setPurgeResult(null);
+  const handleResetAllData = async () => {
+    setResetting(true);
+    setResetResult(null);
+    setResetError(null);
     try {
-      const res = await api.purgeAllData();
-      setPurgeResult(res.message);
-      alert(res.message);
+      const res = await api.resetAllData();
+      setResetResult(res.message);
+      setConfirmingReset(false);
     } catch (err: unknown) {
-      alert((err as Error).message || 'Failed to purge data.');
+      console.error('Reset error:', err);
+      setResetError((err as Error).message || 'Failed to reset data.');
+      setConfirmingReset(false);
     } finally {
-      setPurging(false);
+      setResetting(false);
     }
   };
 
@@ -272,7 +272,7 @@ export const SettingsView: React.FC = () => {
         </div>
       </div>
 
-      {/* Danger Zone: Purge Test Data */}
+      {/* Danger Zone: Reset Test Data */}
       <div className="bg-[#FFFFFF] rounded-2xl border border-[#E53935]/20 p-6 sm:p-8 space-y-4 shadow-studio">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
@@ -280,7 +280,7 @@ export const SettingsView: React.FC = () => {
               Danger Zone
             </span>
             <h2 className="text-base font-bold text-[#0A0A0A]">
-              Purge All Test & Registration Data
+              Reset All Test & Registration Data
             </h2>
             <p className="text-xs text-[#55554F] mt-1 max-w-xl">
               Permanently wipe all registrations, attendees, attendee portal accounts, and check-in records.
@@ -288,25 +288,54 @@ export const SettingsView: React.FC = () => {
             </p>
           </div>
 
-          <button
-            type="button"
-            disabled={purging}
-            onClick={handlePurgeAllData}
-            className={`px-5 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-2 transition-all shadow-sm ${
-              purging
-                ? 'bg-[#E6E6DF] text-[#8C8C85] cursor-not-allowed'
-                : 'bg-[#FFF5F5] hover:bg-[#FEE2E2] text-[#E53935] border border-[#E53935]/30 cursor-pointer'
-            }`}
-          >
-            {purging ? <IconLoader size={14} /> : <IconTrash size={14} />}
-            <span>{purging ? 'Purging records...' : 'Purge All Test Data'}</span>
-          </button>
+          {!confirmingReset ? (
+            <button
+              type="button"
+              disabled={resetting}
+              onClick={() => setConfirmingReset(true)}
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-2 transition-all shadow-sm ${
+                resetting
+                  ? 'bg-[#E6E6DF] text-[#8C8C85] cursor-not-allowed'
+                  : 'bg-[#FFF5F5] hover:bg-[#FEE2E2] text-[#E53935] border border-[#E53935]/30 cursor-pointer'
+              }`}
+            >
+              {resetting ? <IconLoader size={14} /> : <IconTrash size={14} />}
+              <span>{resetting ? 'Resetting records...' : 'Reset'}</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                disabled={resetting}
+                onClick={handleResetAllData}
+                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#DC2626] hover:bg-[#B91C1C] text-[#FAFAF7] inline-flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+              >
+                {resetting ? <IconLoader size={14} /> : <IconTrash size={14} />}
+                <span>{resetting ? 'Resetting...' : 'Confirm Reset'}</span>
+              </button>
+              <button
+                type="button"
+                disabled={resetting}
+                onClick={() => setConfirmingReset(false)}
+                className="px-4 py-2.5 rounded-xl text-xs font-bold bg-[#FFFFFF] border border-[#E6E6DF] hover:bg-[#F2F2EC] text-[#55554F] transition-all cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
 
-        {purgeResult && (
+        {resetResult && (
           <div className="p-3.5 bg-[#F0FDF4] border border-[#10B981]/30 rounded-xl text-xs text-[#10B981] flex items-center gap-2">
             <IconCheck size={16} />
-            <span>{purgeResult}</span>
+            <span>{resetResult}</span>
+          </div>
+        )}
+
+        {resetError && (
+          <div className="p-3.5 bg-[#FFF5F5] border border-[#E53935]/30 rounded-xl text-xs text-[#E53935] flex items-center gap-2">
+            <IconAlertCircle size={16} />
+            <span>{resetError}</span>
           </div>
         )}
       </div>

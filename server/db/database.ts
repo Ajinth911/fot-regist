@@ -93,8 +93,12 @@ export function initDatabase() {
       payer_phone TEXT NOT NULL,
       total_amount INTEGER NOT NULL,
       attendee_count INTEGER NOT NULL,
-      payment_screenshot_url TEXT NOT NULL,
+      payment_screenshot_url TEXT DEFAULT '',
       utr_number TEXT,
+      payment_method TEXT DEFAULT 'razorpay',
+      razorpay_order_id TEXT,
+      razorpay_payment_id TEXT,
+      razorpay_signature TEXT,
       status TEXT NOT NULL DEFAULT 'pending',
       rejection_reason TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -103,6 +107,10 @@ export function initDatabase() {
   `);
 
   ensureColumnExists('registrations', 'utr_number', 'TEXT');
+  ensureColumnExists('registrations', 'payment_method', "TEXT DEFAULT 'razorpay'");
+  ensureColumnExists('registrations', 'razorpay_order_id', 'TEXT');
+  ensureColumnExists('registrations', 'razorpay_payment_id', 'TEXT');
+  ensureColumnExists('registrations', 'razorpay_signature', 'TEXT');
 
   // 4. Attendees Table
   db.exec(`

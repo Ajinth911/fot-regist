@@ -39,13 +39,37 @@ export interface Registration {
   payer_phone: string;
   total_amount: number;
   attendee_count: number;
-  payment_screenshot_url: string;
+  payment_screenshot_url?: string | null;
   utr_number?: string | null;
+  payment_method?: string | null;
+  razorpay_order_id?: string | null;
+  razorpay_payment_id?: string | null;
+  razorpay_signature?: string | null;
   status: RegistrationStatus;
   rejection_reason?: string | null;
   created_at: string;
   confirmed_at?: string | null;
   attendees?: Attendee[];
+}
+
+export interface RazorpayOrderResponse {
+  success: boolean;
+  orderId: string;
+  order_id?: string;
+  amount: number;
+  currency: string;
+  keyId: string;
+  key_id?: string;
+  registrationId?: string;
+  totalAmount?: number;
+  attendeeCount?: number;
+}
+
+export interface RazorpayVerifyResponse {
+  success: boolean;
+  registrationId: string;
+  attendeesCount?: number;
+  message: string;
 }
 
 export interface ScheduleItem {

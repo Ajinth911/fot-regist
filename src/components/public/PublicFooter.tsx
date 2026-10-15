@@ -16,19 +16,18 @@ export const PublicFooter: React.FC = () => {
             </p>
           </div>
 
-          {/* Event Quick Links */}
+          {/* Event Quick Details */}
           <div className="space-y-3 text-sm font-medium">
-            <span className="text-xs text-[#8C8C85] uppercase tracking-wider block font-semibold font-mono">Event</span>
-            <div><a href="#about" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">About</a></div>
-            <div><a href="#schedule" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">Schedule</a></div>
-            <div><a href="#prizes" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">Prizes</a></div>
-            <div><a href="#faq" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">Frequently Asked Questions</a></div>
+            <span className="text-xs text-[#8C8C85] uppercase tracking-wider block font-semibold font-mono">Event Details</span>
+            <div className="text-xs text-[#55554F]">Saturday, October 24, 2026</div>
+            <div className="text-xs text-[#55554F]">08:30 AM - 06:00 PM IST</div>
+            <div className="text-xs text-[#55554F]">Auditorium 01, Bengaluru</div>
           </div>
 
           {/* Legal & Organiser Links */}
           <div className="space-y-3 text-sm font-medium">
             <span className="text-xs text-[#8C8C85] uppercase tracking-wider block font-semibold font-mono">Information</span>
-            <div><Link to="/register" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">Register for event</Link></div>
+            <div><Link to="/" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">Registration</Link></div>
             <div><Link to="/terms" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">Terms of Service</Link></div>
             <div><Link to="/privacy" className="text-[#55554F] hover:text-[#0A0A0A] transition-colors">Privacy Policy</Link></div>
             <div className="pt-2">

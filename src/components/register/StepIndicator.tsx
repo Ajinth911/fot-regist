@@ -20,7 +20,7 @@ export const StepIndicator: React.FC<StepIndicatorProps> = ({
 }) => {
   return (
     <div className="w-full max-w-2xl mx-auto select-none">
-      <div className="grid grid-cols-3 gap-2 sm:gap-4 relative">
+      <div className={`grid gap-2 sm:gap-4 relative ${steps.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
         {steps.map((s) => {
           const isCompleted = s.step < currentStep;
           const isActive = s.step === currentStep;

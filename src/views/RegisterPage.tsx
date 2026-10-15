@@ -4,15 +4,15 @@ import type { AttendeeInput, EventConfig } from '../types';
 import { api } from '../lib/api';
 import { StepIndicator } from '../components/register/StepIndicator';
 import { Step1Attendees } from '../components/register/Step1Attendees';
-import { Step2Payment } from '../components/register/Step2Payment';
 import { Step3Review } from '../components/register/Step3Review';
+import { StepPaymentRazorpay } from '../components/register/StepPaymentRazorpay';
 import { OrderSummaryCard } from '../components/register/OrderSummaryCard';
 import { PublicFooter } from '../components/public/PublicFooter';
 
 const STEPS = [
   { step: 1, title: 'Attendees', description: 'Participant details' },
-  { step: 2, title: 'Payment', description: 'UPI & verification' },
-  { step: 3, title: 'Review', description: 'Confirm booking' },
+  { step: 2, title: 'Review', description: 'Verify participants' },
+  { step: 3, title: 'Payment', description: 'Razorpay & instant pass' },
 ];
 
 export const RegisterPage: React.FC = () => {
@@ -30,12 +30,6 @@ export const RegisterPage: React.FC = () => {
       category: 'SOLO',
     },
   ]);
-
-  const [screenshotFile, setScreenshotFile] = useState<File | null>(null);
-  const [screenshotPreview, setScreenshotPreview] = useState<string | null>(null);
-  const [utrNumber, setUtrNumber] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -103,43 +97,8 @@ export const RegisterPage: React.FC = () => {
     setAttendees((prev) => prev.filter((a) => a.id !== id));
   };
 
-  const handleSubmit = async () => {
-    if (!screenshotFile) {
-      setSubmitError('Please attach your payment screenshot.');
-      setCurrentStep(2);
-      return;
-    }
-
-    setIsSubmitting(true);
-    setSubmitError(null);
-
-    try {
-      const formData = new FormData();
-      formData.append('payer_name', attendees[0].name.trim());
-      formData.append('payer_email', attendees[0].email.trim());
-      formData.append('payer_phone', attendees[0].phone.trim());
-      formData.append('attendees', JSON.stringify(attendees));
-      formData.append('screenshot', screenshotFile);
-      if (utrNumber.trim()) {
-        formData.append('utr_number', utrNumber.trim());
-      }
-
-      const res = await api.submitRegistration(formData);
-      if (res.success) {
-        navigate(`/register/success?ref=${res.registrationId}&email=${encodeURIComponent(attendees[0].email.trim())}`);
-      } else {
-        setSubmitError(res.message || 'Registration could not be completed. Please try again.');
-      }
-    } catch (err: unknown) {
-      console.error('Submission error:', err);
-      const errObj = err as Record<string, unknown>;
-      const msg = typeof errObj?.message === 'string'
-        ? errObj.message
-        : (typeof err === 'string' ? err : 'Server error while submitting registration.');
-      setSubmitError(msg);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const handlePaymentSuccess = (registrationId: string, email: string) => {
+    navigate(`/register/success?ref=${registrationId}&email=${encodeURIComponent(email)}`);
   };
 
   if (loadingConfig && !config) {
@@ -149,6 +108,8 @@ export const RegisterPage: React.FC = () => {
       </div>
     );
   }
+
+  const totalAmount = attendees.length * (activeConfig.price_per_person || 99);
 
   return (
     <div className="min-h-screen bg-[#FAFAF7] text-[#0A0A0A] flex flex-col justify-between">
@@ -167,13 +128,12 @@ export const RegisterPage: React.FC = () => {
             </span>
           </Link>
 
-          <Link
-            to="/"
-            className="text-xs font-semibold text-[#55554F] hover:text-[#0A0A0A] transition-colors flex items-center gap-1.5"
-          >
-            <span>&larr;</span>
-            <span>Back to event</span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FFFFFF] border border-[#E6E6DF] text-xs font-medium text-[#55554F] shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-[#C2E600] animate-pulse" />
+              <span>{activeConfig.date_text}</span>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -192,12 +152,6 @@ export const RegisterPage: React.FC = () => {
           />
         </div>
 
-        {submitError && (
-          <div className="mb-8 p-4 rounded-xl bg-[#FFF5F5] border border-[#E53935] text-[#E53935] text-sm">
-            {submitError}
-          </div>
-        )}
-
         {/* 2-Column Grid: Form (7 cols) + Summary (5 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start pb-20 lg:pb-0">
           <div className="lg:col-span-7">
@@ -213,32 +167,20 @@ export const RegisterPage: React.FC = () => {
             )}
 
             {currentStep === 2 && (
-              <Step2Payment
-                totalAmount={attendees.length * (activeConfig.price_per_person || 99)}
-                upiId={activeConfig.upi_id}
-                upiName={activeConfig.upi_name}
-                gpayQrUrl={activeConfig.gpay_qr_url}
-                screenshotFile={screenshotFile}
-                screenshotPreview={screenshotPreview}
-                utrNumber={utrNumber}
-                onScreenshotChange={(file, preview) => {
-                  setScreenshotFile(file);
-                  setScreenshotPreview(preview);
-                }}
-                onUtrChange={setUtrNumber}
-                onNext={() => setCurrentStep(3)}
+              <Step3Review
+                attendees={attendees}
+                totalAmount={totalAmount}
+                onProceed={() => setCurrentStep(3)}
                 onBack={() => setCurrentStep(1)}
               />
             )}
 
             {currentStep === 3 && (
-              <Step3Review
+              <StepPaymentRazorpay
                 attendees={attendees}
-                totalAmount={attendees.length * (activeConfig.price_per_person || 99)}
-                screenshotPreview={screenshotPreview}
-                utrNumber={utrNumber}
-                isSubmitting={isSubmitting}
-                onSubmit={handleSubmit}
+                totalAmount={totalAmount}
+                config={activeConfig}
+                onSuccess={handlePaymentSuccess}
                 onBack={() => setCurrentStep(2)}
               />
             )}

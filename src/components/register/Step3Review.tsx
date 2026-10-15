@@ -1,42 +1,29 @@
 import React, { useState } from 'react';
 import type { AttendeeInput } from '../../types';
 import { computePairing } from '../../lib/teamPairing';
-import { IconUser, IconUsers, IconAlertCircle, IconArrowRight } from '../../lib/icons';
-import { Lightbox } from '../common/Lightbox';
+import { IconUser, IconUsers, IconAlertCircle, IconArrowRight, IconShield } from '../../lib/icons';
 
 interface Step3ReviewProps {
   attendees: AttendeeInput[];
   totalAmount: number;
-  screenshotPreview: string | null;
-  utrNumber: string;
-  isSubmitting: boolean;
-  onSubmit: () => void;
+  onProceed: () => void;
   onBack: () => void;
 }
 
 export const Step3Review: React.FC<Step3ReviewProps> = ({
   attendees,
   totalAmount,
-  screenshotPreview,
-  utrNumber,
-  isSubmitting,
-  onSubmit,
+  onProceed,
   onBack,
 }) => {
-  const [agreed, setAgreed] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showLightbox, setShowLightbox] = useState(false);
 
   const pairingResult = computePairing(attendees);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!agreed) {
-      setError('Please accept the event terms and conditions to proceed.');
-      return;
-    }
     setError(null);
-    onSubmit();
+    onProceed();
   };
 
   return (
@@ -47,7 +34,7 @@ export const Step3Review: React.FC<Step3ReviewProps> = ({
           Review your registration
         </h2>
         <p className="text-[#55554F] text-sm mt-1">
-          Please confirm all details before submitting. Passes will be issued to each email after payment verification.
+          Please verify your participant details before proceeding to payment. Individual passes will be emailed immediately after payment.
         </p>
       </div>
 
@@ -117,69 +104,29 @@ export const Step3Review: React.FC<Step3ReviewProps> = ({
           )}
         </div>
 
-        {/* Payment Confirmation Proof */}
+        {/* Amount Summary */}
         <div className="pt-6 border-t border-[#E6E6DF]">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[#8C8C85] font-mono mb-4">
-            Payment summary
+            Order breakdown
           </h3>
 
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-xl bg-[#FAFAF7] border border-[#E6E6DF]">
-            <div className="flex items-center gap-4">
-              {screenshotPreview && (
-                <button
-                  type="button"
-                  onClick={() => setShowLightbox(true)}
-                  className="relative group shrink-0 cursor-pointer"
-                >
-                  <img
-                    src={screenshotPreview}
-                    alt="Payment Proof"
-                    className="w-16 h-16 object-cover rounded-lg border border-[#E6E6DF] group-hover:border-[#0A0A0A] transition-colors"
-                  />
-                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center text-[10px] text-white font-medium">
-                    View
-                  </div>
-                </button>
-              )}
-              <div>
-                <div className="text-xs text-[#8C8C85]">Total Paid</div>
-                <div className="text-2xl font-bold font-mono text-[#0A0A0A]">₹{totalAmount}</div>
-                {utrNumber && (
-                  <div className="text-xs text-[#55554F] mt-0.5">
-                    UTR: <span className="text-[#0A0A0A] font-mono font-semibold">{utrNumber}</span>
-                  </div>
-                )}
+            <div>
+              <div className="text-xs text-[#8C8C85]">Total to be paid</div>
+              <div className="text-3xl font-bold font-mono text-[#0A0A0A] mt-0.5">₹{totalAmount}</div>
+              <div className="text-xs text-[#55554F] mt-1">
+                ₹{Math.round(totalAmount / attendees.length)} &times; {attendees.length} attendee{attendees.length > 1 ? 's' : ''}
               </div>
             </div>
 
-            <div className="text-xs text-[#55554F] bg-[#FFFFFF] px-3.5 py-2 rounded-lg border border-[#E6E6DF]">
-              Method: <strong className="text-[#0A0A0A]">Direct UPI Transfer</strong>
+            <div className="flex items-center gap-2 text-xs text-[#55554F] bg-[#FFFFFF] px-3.5 py-2.5 rounded-xl border border-[#E6E6DF]">
+              <IconShield size={16} className="text-[#0A0A0A] shrink-0" />
+              <span>Instant Razorpay Payment & Automatic Pass Delivery</span>
             </div>
           </div>
         </div>
 
-        {/* Terms Consent Checkbox */}
-        <div className="pt-6 border-t border-[#E6E6DF]">
-          <label className="flex items-start gap-3 cursor-pointer group">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
-              className="mt-0.5 w-4 h-4 rounded bg-[#FAFAF7] border-[#E6E6DF] text-[#0A0A0A] focus:ring-[#0A0A0A] accent-[#0A0A0A] cursor-pointer"
-            />
-            <span className="text-xs text-[#55554F] leading-relaxed select-none group-hover:text-[#0A0A0A] transition-colors">
-              I agree to the{' '}
-              <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-[#0A0A0A] font-bold underline underline-offset-2">
-                Terms of Service
-              </a>{' '}
-              and{' '}
-              <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-[#0A0A0A] font-bold underline underline-offset-2">
-                Privacy Policy
-              </a>
-              . I confirm that all provided attendee information is accurate.
-            </span>
-          </label>
-        </div>
+
       </div>
 
       {/* Actions */}
@@ -187,40 +134,20 @@ export const Step3Review: React.FC<Step3ReviewProps> = ({
         <button
           type="button"
           onClick={onBack}
-          disabled={isSubmitting}
-          className="h-12 px-6 rounded-xl bg-[#FFFFFF] border border-[#E6E6DF] hover:bg-[#F2F2EC] text-sm font-semibold text-[#0A0A0A] shadow-sm transition-colors cursor-pointer disabled:opacity-50"
+          className="h-12 px-6 rounded-xl bg-[#FFFFFF] border border-[#E6E6DF] hover:bg-[#F2F2EC] text-sm font-semibold text-[#0A0A0A] shadow-sm transition-colors cursor-pointer"
         >
-          &larr; Back
+          &larr; Back to Attendees
         </button>
         <button
           type="submit"
-          disabled={isSubmitting}
-          className="h-12 px-8 bg-[#0A0A0A] hover:bg-[#222222] text-[#FAFAF7] text-sm font-semibold rounded-xl inline-flex items-center gap-2.5 shadow-md transition-all hover:scale-105 group cursor-pointer disabled:opacity-70"
+          className="h-12 px-8 bg-[#0A0A0A] hover:bg-[#222222] text-[#FAFAF7] text-sm font-semibold rounded-xl inline-flex items-center gap-2.5 shadow-md transition-all hover:scale-105 group cursor-pointer"
         >
-          {isSubmitting ? (
-            <>
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>Submitting registration...</span>
-            </>
-          ) : (
-            <>
-              <span>Complete registration</span>
-              <span className="w-5 h-5 rounded-full bg-[#C2E600] text-[#0A0A0A] flex items-center justify-center transition-transform group-hover:translate-x-0.5">
-                <IconArrowRight size={12} />
-              </span>
-            </>
-          )}
+          <span>Proceed to Payment</span>
+          <span className="w-5 h-5 rounded-full bg-[#C2E600] text-[#0A0A0A] flex items-center justify-center transition-transform group-hover:translate-x-0.5">
+            <IconArrowRight size={12} />
+          </span>
         </button>
       </div>
-
-      {/* Lightbox Modal */}
-      {showLightbox && screenshotPreview && (
-        <Lightbox
-          isOpen={showLightbox}
-          imageUrl={screenshotPreview}
-          onClose={() => setShowLightbox(false)}
-        />
-      )}
     </form>
   );
 };

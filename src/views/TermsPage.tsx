@@ -49,7 +49,7 @@ export const TermsPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#0A0A0A]">3. Payment & Confirmation</h2>
             <p>
-              Registration fees are paid via direct UPI transfer to GenLab Pvt Ltd. Passes are issued only after payment verification against valid transaction references (UTR). Unverified or duplicate payment claims are subject to rejection.
+              Registration fees are processed securely via Razorpay (supporting UPI, Cards, and Net Banking). Digital QR passes are verified and issued automatically to each attendee's email immediately upon successful payment completion.
             </p>
           </section>
 

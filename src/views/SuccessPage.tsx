@@ -43,10 +43,10 @@ export const SuccessPage: React.FC = () => {
 
         {/* Headlines */}
         <h1 className="font-display text-4xl sm:text-5xl font-bold tracking-tight text-[#0A0A0A] mb-3">
-          You're registered.
+          Payment confirmed!
         </h1>
         <p className="text-[#55554F] text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
-          We'll verify your payment and email each person's QR pass.
+          Your payment was verified automatically. Digital QR entry passes have been emailed to each attendee.
         </p>
 
         {/* Reference Card */}
@@ -60,35 +60,36 @@ export const SuccessPage: React.FC = () => {
                 {refNumber}
               </span>
             </div>
-            <div className="text-xs text-[#0A0A0A] bg-[#F2F2EC] border border-[#E6E6DF] px-3.5 py-1.5 rounded-full self-start sm:self-auto font-bold">
-              Payment Pending Verification
+            <div className="text-xs text-[#0A0A0A] bg-[#C2E600] border border-[#A5C200] px-3.5 py-1.5 rounded-full self-start sm:self-auto font-bold flex items-center gap-1.5 shadow-sm">
+              <IconCheck size={13} />
+              <span>Payment Verified & Confirmed</span>
             </div>
           </div>
 
           {/* What happens next */}
           <div className="space-y-4">
             <h2 className="text-xs uppercase tracking-wider font-bold text-[#8C8C85] font-mono">
-              What happens next
+              Pass Status & Entry Details
             </h2>
 
             <div className="space-y-3.5 text-xs text-[#55554F]">
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#F2F2EC] border border-[#E6E6DF] text-[#0A0A0A] flex items-center justify-center shrink-0 font-bold font-mono">
-                  1
+                <div className="w-6 h-6 rounded-full bg-[#C2E600] text-[#0A0A0A] flex items-center justify-center shrink-0 font-bold font-mono">
+                  ✓
                 </div>
                 <div>
-                  <strong className="text-[#0A0A0A] block">Payment Verification</strong>
-                  <span>The GenLab team will verify your UPI transaction screenshot against the bank statement.</span>
+                  <strong className="text-[#0A0A0A] block">Instant Payment Verification</strong>
+                  <span>Your transaction was verified automatically via Razorpay.</span>
                 </div>
               </div>
 
               <div className="flex items-start gap-3">
-                <div className="w-6 h-6 rounded-full bg-[#F2F2EC] border border-[#E6E6DF] text-[#0A0A0A] flex items-center justify-center shrink-0 font-bold font-mono">
-                  2
+                <div className="w-6 h-6 rounded-full bg-[#C2E600] text-[#0A0A0A] flex items-center justify-center shrink-0 font-bold font-mono">
+                  ✓
                 </div>
                 <div>
-                  <strong className="text-[#0A0A0A] block">Individual QR Pass Issuance</strong>
-                  <span>Each registered attendee will receive their digital badge and entry QR code at their email address.</span>
+                  <strong className="text-[#0A0A0A] block">Passes Emailed Instantly</strong>
+                  <span>Each registered attendee has been issued a cryptographically signed QR ticket sent to their email.</span>
                 </div>
               </div>
 
@@ -98,14 +99,14 @@ export const SuccessPage: React.FC = () => {
                 </div>
                 <div>
                   <strong className="text-[#0A0A0A] block">Event Day Entry</strong>
-                  <span>Simply show your QR pass at the entrance on Saturday, October 24 for seamless check-in.</span>
+                  <span>Simply display the emailed QR pass at the entrance on event day for rapid check-in.</span>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="pt-4 border-t border-[#E6E6DF] text-xs text-[#8C8C85]">
-            Confirmation updates will be sent to <strong className="text-[#0A0A0A]">{email}</strong>.
+            Booking receipt and passes dispatched to <strong className="text-[#0A0A0A]">{email}</strong>.
           </div>
         </div>
 
@@ -115,7 +116,7 @@ export const SuccessPage: React.FC = () => {
             to="/"
             className="h-12 px-8 bg-[#0A0A0A] hover:bg-[#222222] text-[#FAFAF7] text-sm font-semibold rounded-xl inline-flex items-center gap-2.5 shadow-md transition-all hover:scale-105 group"
           >
-            <span>Return to event page</span>
+            <span>Return to registration</span>
             <span className="w-5 h-5 rounded-full bg-[#C2E600] text-[#0A0A0A] flex items-center justify-center transition-transform group-hover:translate-x-0.5">
               <IconArrowRight size={12} />
             </span>

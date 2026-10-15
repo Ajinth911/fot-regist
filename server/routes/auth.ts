@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import { db } from '../db/database';
+import { supabase, comparePassword, normalizePasswordHash } from '../db/supabase';
 import {
   requireAdmin,
   signAdminToken,
@@ -9,6 +10,21 @@ import {
   signUserToken,
   AuthenticatedUserRequest,
 } from '../middleware/auth';
+import {
+  createRateLimiter,
+  honeypotGuard,
+  validatePersonName,
+  validateAndNormalizeEmail,
+  validateIndianPhone,
+  validatePasswordSecurity,
+} from '../middleware/security';
+
+const userSignupLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  maxRequests: 10,
+  keyPrefix: 'rl_signup',
+  message: 'Too many registration attempts. Please wait 15 minutes.',
+});
 
 const router = Router();
 
@@ -33,7 +49,7 @@ const DUMMY_HASH = '$2a$12$e80y6mN2hY5059s79Yp6ve8sJ7hK7.46x7435qfC1Ym3u49iS1Gqa
 // Rate limit tracker for forgot password
 const forgotPasswordAttempts = new Map<string, { count: number; lastAttempt: number }>();
 
-router.post('/login', (req: Request, res: Response): void => {
+router.post('/login', async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
   const ip = req.ip || req.socket.remoteAddress || 'unknown';
 
@@ -50,13 +66,45 @@ router.post('/login', (req: Request, res: Response): void => {
   }
 
   const cleanEmail = String(email).trim().toLowerCase();
-  const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(cleanEmail) as { id: number; email: string; password_hash: string } | undefined;
+  let admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(cleanEmail) as { id: number; email: string; password_hash: string } | undefined;
 
-  // Constant-time execution to prevent timing-based user enumeration
-  const hashToCompare = admin ? admin.password_hash : DUMMY_HASH;
-  const isMatch = bcrypt.compareSync(password, hashToCompare);
+  let isMatch = false;
+  if (admin && admin.password_hash) {
+    isMatch = comparePassword(password, admin.password_hash);
+  }
+
+  // If local match fails or admin was newly created in Supabase, verify directly with Supabase in real-time
+  if (!isMatch && supabase) {
+    try {
+      const { data: remoteAdmin, error } = await supabase
+        .from('admins')
+        .select('*')
+        .ilike('email', cleanEmail)
+        .maybeSingle();
+
+      if (remoteAdmin && remoteAdmin.password_hash) {
+        if (comparePassword(password, remoteAdmin.password_hash)) {
+          // Success! Sync admin into local SQLite immediately
+          const hash = normalizePasswordHash(remoteAdmin.password_hash);
+          db.prepare(`
+            INSERT INTO admins (email, password_hash)
+            VALUES (?, ?)
+            ON CONFLICT(email) DO UPDATE SET password_hash = excluded.password_hash
+          `).run(cleanEmail, hash);
+
+          admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(cleanEmail) as any;
+          isMatch = true;
+          console.log(`[AUTH] Admin ${cleanEmail} authenticated directly against Supabase and synced locally.`);
+        }
+      }
+    } catch (supaErr) {
+      console.warn('[AUTH] Live Supabase admin lookup error:', supaErr);
+    }
+  }
 
   if (!admin || !isMatch) {
+    // Constant-time execution fallback
+    try { bcrypt.compareSync(password, DUMMY_HASH); } catch {}
     const currentCount = (attempt?.count || 0) + 1;
     failedAttempts.set(ip, { count: currentCount, lastAttempt: Date.now() });
     res.status(401).json({ error: 'Invalid credentials. Access denied.' });
@@ -140,75 +188,103 @@ router.post('/forgot-password', (req: Request, res: Response): void => {
 const userLoginAttempts = new Map<string, { count: number; lastAttempt: number }>();
 
 // POST /api/auth/user/signup
-router.post('/user/signup', (req: Request, res: Response): void => {
-  try {
-    const { name, email, phone, password } = req.body;
+router.post(
+  '/user/signup',
+  userSignupLimiter,
+  honeypotGuard,
+  (req: Request, res: Response): void => {
+    try {
+      const { name, email, phone, password, confirmPassword } = req.body;
 
-    if (!name || !email || !password) {
-      res.status(400).json({ error: 'Name, email, and password are required.' });
-      return;
+      if (!name || !email || !password) {
+        res.status(400).json({ error: 'Name, email, and password are required.' });
+        return;
+      }
+
+      // 1. Full Name Validation (Allowlist, length 2-100, no script/control chars)
+      const nameVal = validatePersonName(name);
+      if (!nameVal.valid) {
+        res.status(400).json({ error: nameVal.error });
+        return;
+      }
+      const cleanName = nameVal.name;
+
+      // 2. Email Validation & Normalization
+      const emailVal = validateAndNormalizeEmail(email);
+      if (!emailVal.valid) {
+        res.status(400).json({ error: emailVal.error });
+        return;
+      }
+      const cleanEmail = emailVal.email;
+
+      // 3. Optional Phone Validation
+      let cleanPhone = '';
+      if (phone && String(phone).trim() !== '') {
+        const phoneVal = validateIndianPhone(phone);
+        if (!phoneVal.valid) {
+          res.status(400).json({ error: phoneVal.error });
+          return;
+        }
+        cleanPhone = phoneVal.phone;
+      }
+
+      // 4. Confirm Password Match Check
+      if (confirmPassword !== undefined && password !== confirmPassword) {
+        res.status(400).json({ error: 'Passwords do not match. Please re-enter.' });
+        return;
+      }
+
+      // 5. Password Security & Strength (min 8 with entropy, 12+ recommended, no breached/weak, no name/email inclusion)
+      const passwordVal = validatePasswordSecurity(password, cleanName, cleanEmail);
+      if (!passwordVal.valid) {
+        res.status(400).json({ error: passwordVal.error });
+        return;
+      }
+
+      // 6. Check if email already registered (Prevent duplicate account creation)
+      const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(cleanEmail);
+      if (existing) {
+        res.status(409).json({ error: 'An account with this email already exists. Please sign in instead.' });
+        return;
+      }
+
+      // 7. Secure Hashing with bcrypt (cost factor 12)
+      const salt = bcrypt.genSaltSync(12);
+      const hash = bcrypt.hashSync(password, salt);
+      const userId = `USR-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+
+      // 8. Whitelisted Insertion (Prevent Mass-Assignment)
+      db.prepare(`
+        INSERT INTO users (id, name, email, phone, password_hash)
+        VALUES (?, ?, ?, ?, ?)
+      `).run(userId, cleanName, cleanEmail, cleanPhone, hash);
+
+      const token = signUserToken({ id: userId, email: cleanEmail, name: cleanName });
+
+      res.cookie('fot_user_token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
+      });
+
+      res.status(201).json({
+        success: true,
+        user: {
+          id: userId,
+          name: cleanName,
+          email: cleanEmail,
+          phone: cleanPhone,
+        },
+        token,
+        message: 'Account created successfully.',
+      });
+    } catch (err: unknown) {
+      console.error('[USER SIGNUP ERROR]', err);
+      res.status(500).json({ error: 'Registration failed due to an internal error. Please try again later.' });
     }
-
-    const cleanName = String(name).trim();
-    const cleanEmail = String(email).trim().toLowerCase();
-    const cleanPhone = phone ? String(phone).trim() : '';
-
-    if (cleanName.length < 2 || cleanName.length > 100) {
-      res.status(400).json({ error: 'Please enter a valid full name (2 to 100 characters).' });
-      return;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
-      res.status(400).json({ error: 'Please enter a valid email address.' });
-      return;
-    }
-
-    if (typeof password !== 'string' || password.length < 8) {
-      res.status(400).json({ error: 'Password must be at least 8 characters long.' });
-      return;
-    }
-
-    // Check if email already registered
-    const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(cleanEmail);
-    if (existing) {
-      res.status(409).json({ error: 'An account with this email already exists. Please sign in instead.' });
-      return;
-    }
-
-    const salt = bcrypt.genSaltSync(12);
-    const hash = bcrypt.hashSync(password, salt);
-    const userId = `USR-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-
-    db.prepare(`
-      INSERT INTO users (id, name, email, phone, password_hash)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(userId, cleanName, cleanEmail, cleanPhone, hash);
-
-    const token = signUserToken({ id: userId, email: cleanEmail, name: cleanName });
-
-    res.cookie('fot_user_token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 14 * 24 * 60 * 60 * 1000, // 14 days
-    });
-
-    res.status(201).json({
-      success: true,
-      user: {
-        id: userId,
-        name: cleanName,
-        email: cleanEmail,
-        phone: cleanPhone,
-      },
-      token,
-      message: 'Account created successfully.',
-    });
-  } catch (err: unknown) {
-    console.error('[SIGNUP ERROR]', err);
-    res.status(500).json({ error: 'Failed to create account. Please try again.' });
   }
-});
+);
 
 // POST /api/auth/user/login
 router.post('/user/login', (req: Request, res: Response): void => {

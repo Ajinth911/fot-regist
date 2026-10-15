@@ -166,7 +166,16 @@ export const SoloRegistrationsView: React.FC<SoloRegistrationsViewProps> = ({
                       </td>
 
                       <td className="py-4 px-4">
-                        {reg.payment_screenshot_url ? (
+                        {reg.razorpay_payment_id ? (
+                          <div className="space-y-1">
+                            <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold bg-[#C2E600]/25 text-[#0A0A0A] px-2 py-0.5 rounded-full border border-[#A5C200]">
+                              Razorpay Verified
+                            </span>
+                            <span className="font-mono text-[10px] text-[#55554F] block truncate max-w-[120px]" title={reg.razorpay_payment_id}>
+                              {reg.razorpay_payment_id}
+                            </span>
+                          </div>
+                        ) : reg.payment_screenshot_url ? (
                           <div className="flex items-center gap-2">
                             <button
                               type="button"
@@ -189,7 +198,7 @@ export const SoloRegistrationsView: React.FC<SoloRegistrationsViewProps> = ({
                             )}
                           </div>
                         ) : (
-                          <span className="text-[11px] text-[#8C8C85]">No screenshot</span>
+                          <span className="text-[11px] text-[#8C8C85]">Online Payment</span>
                         )}
                       </td>
 

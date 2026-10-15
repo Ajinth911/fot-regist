@@ -85,7 +85,7 @@ export const OrderSummaryCard: React.FC<OrderSummaryCardProps> = ({
           {/* Trust badge */}
           <div className="p-4 rounded-xl bg-[#FAFAF7] border border-[#E6E6DF] flex items-center gap-3 text-[11px] text-[#55554F]">
             <IconShield size={16} className="text-[#0A0A0A] shrink-0" />
-            <span>Passes are emailed immediately after payment verification.</span>
+            <span>Digital QR passes are generated and emailed immediately upon successful payment.</span>
           </div>
         </div>
       </div>

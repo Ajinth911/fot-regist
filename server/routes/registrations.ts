@@ -6,6 +6,7 @@ import { TokenService } from '../services/tokenService';
 import { CardGenerator } from '../services/cardGenerator';
 import { EmailService } from '../services/emailService';
 import { syncRegistrationToSupabase, supabase } from '../db/supabase';
+import { confirmRegistrationAndIssuePasses } from '../services/ticketService';
 
 const router = Router();
 
@@ -105,24 +106,64 @@ router.post('/', upload.single('screenshot'), (req: Request, res: Response): voi
       return;
     }
 
-    // Validate each attendee
+    // Check for duplicate emails or phones within the current submission
+    const seenEmails = new Set<string>();
+    const seenPhones = new Set<string>();
+
     for (let i = 0; i < parsedAttendees.length; i++) {
       const att = parsedAttendees[i];
-      if (!att.name || !att.email || !att.phone) {
-        res.status(400).json({ error: `Please provide name, email, and phone for Attendee ${i + 1}.` });
-        return;
-      }
-      att.name = String(att.name).trim().slice(0, 120);
-      att.email = String(att.email).trim().slice(0, 120);
-      att.phone = String(att.phone).trim().slice(0, 25);
-
+      const cleanEmail = att.email.toLowerCase();
       const cleanPhone = att.phone.replace(/\D/g, '').slice(-10);
-      if (cleanPhone.length !== 10) {
-        res.status(400).json({ error: `Please enter a valid 10-digit phone number for ${att.name}.` });
+
+      if (seenEmails.has(cleanEmail)) {
+        res.status(400).json({
+          error: `Duplicate email address "${att.email}" detected in your attendee list. Each attendee must have a distinct email address.`,
+        });
         return;
       }
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(att.email)) {
-        res.status(400).json({ error: `Please enter a valid email address for ${att.name}.` });
+      seenEmails.add(cleanEmail);
+
+      if (seenPhones.has(cleanPhone)) {
+        res.status(400).json({
+          error: `Duplicate phone number "${att.phone}" detected in your attendee list. Each attendee must have a distinct mobile number.`,
+        });
+        return;
+      }
+      seenPhones.add(cleanPhone);
+    }
+
+    // Check if any attendee email or phone is ALREADY registered with a confirmed pass in the database
+    for (const att of parsedAttendees) {
+      const cleanEmail = att.email.toLowerCase();
+      const cleanPhone = att.phone.replace(/\D/g, '').slice(-10);
+
+      const existingConfirmedEmail = db.prepare(`
+        SELECT a.name, a.email, a.ticket_code
+        FROM attendees a
+        JOIN registrations r ON a.registration_id = r.id
+        WHERE LOWER(a.email) = ? AND (a.status = 'confirmed' OR r.status = 'confirmed')
+        LIMIT 1
+      `).get(cleanEmail) as { name: string; email: string; ticket_code: string } | undefined;
+
+      if (existingConfirmedEmail) {
+        res.status(409).json({
+          error: `"${att.email}" is already registered for Friends of Tech (Pass Code: ${existingConfirmedEmail.ticket_code || 'Issued'}). Each attendee can only register once.`,
+        });
+        return;
+      }
+
+      const existingConfirmedPhone = db.prepare(`
+        SELECT a.name, a.email, a.phone, a.ticket_code
+        FROM attendees a
+        JOIN registrations r ON a.registration_id = r.id
+        WHERE a.phone LIKE ? AND (a.status = 'confirmed' OR r.status = 'confirmed')
+        LIMIT 1
+      `).get(`%${cleanPhone}%`) as { name: string; email: string; ticket_code: string } | undefined;
+
+      if (existingConfirmedPhone) {
+        res.status(409).json({
+          error: `Phone number "+91 ${cleanPhone}" is already registered under ${existingConfirmedPhone.name} (${existingConfirmedPhone.email}). Each attendee can only register once.`,
+        });
         return;
       }
     }
@@ -348,126 +389,16 @@ router.post('/:id/confirm', requireAdmin, async (req: Request, res: Response): P
       return;
     }
 
-    const eventConfig = db.prepare('SELECT name, date_text, venue_name FROM event_config WHERE id = 1').get() as {
-      name: string;
-      date_text: string;
-      venue_name: string;
-    };
+    const result = await confirmRegistrationAndIssuePasses(id);
 
-    interface AttendeeRow {
-      id: string;
-      name: string;
-      email: string;
-      phone: string;
-      assigned_category: string;
-      team_identifier: string | null;
-      ticket_code: string | null;
-      signed_token: string | null;
-      id_card_url: string | null;
-      qr_data_url: string | null;
-    }
-
-    const attendees = db.prepare('SELECT * FROM attendees WHERE registration_id = ?').all(id) as AttendeeRow[];
-    const updatedAttendees = [];
-
-    for (const att of attendees) {
-      let ticketCode = att.ticket_code;
-      if (!ticketCode) {
-        ticketCode = getNextTicketCode();
-      }
-
-      // Generate signed token
-      const signedToken = TokenService.signToken({
-        attendeeId: att.id,
-        ticketCode,
-        name: att.name,
-        event: 'Friends of Tech',
-      });
-
-      // Generate ID card pass graphic
-      const { svgString, passUrl, qrDataUrl } = await CardGenerator.generatePassCard({
-        attendeeId: att.id,
-        ticketCode,
-        name: att.name,
-        category: att.assigned_category,
-        teamIdentifier: att.team_identifier,
-        signedToken,
-        eventName: eventConfig.name,
-        dateText: eventConfig.date_text,
-        venueName: eventConfig.venue_name,
-      });
-
-      // Update attendee in DB immediately
-      db.prepare(`
-        UPDATE attendees
-        SET
-          ticket_code = ?,
-          signed_token = ?,
-          qr_data_url = ?,
-          id_card_url = ?,
-          status = 'confirmed'
-        WHERE id = ?
-      `).run(ticketCode, signedToken, qrDataUrl, passUrl, att.id);
-
-      updatedAttendees.push({
-        id: att.id,
-        name: att.name,
-        ticketCode,
-        passUrl,
-        emailPayload: {
-          toEmail: att.email,
-          name: att.name,
-          ticketCode,
-          category: att.assigned_category,
-          teamIdentifier: att.team_identifier,
-          eventName: eventConfig.name,
-          dateText: eventConfig.date_text,
-          venueName: eventConfig.venue_name,
-          passUrl,
-          svgString,
-        },
-      });
-    }
-
-    // Update registration status immediately
-    db.prepare(`
-      UPDATE registrations
-      SET status = 'confirmed', confirmed_at = CURRENT_TIMESTAMP, rejection_reason = NULL
-      WHERE id = ?
-    `).run(id);
-
-    // Background mirror updated registration to Supabase
-    const fullReg = db.prepare('SELECT * FROM registrations WHERE id = ?').get(id) as Record<string, unknown>;
-    const fullAtts = db.prepare('SELECT * FROM attendees WHERE registration_id = ?').all(id) as Array<Record<string, unknown>>;
-    if (fullReg) {
-      syncRegistrationToSupabase(fullReg as any, fullAtts as any).catch(err => console.warn('[SUPABASE] Confirmation sync error:', err));
-    }
-
-    // Respond immediately to admin so UI is fast and never times out
     res.json({
       success: true,
-      message: `Registration confirmed. ${updatedAttendees.length} pass(es) generated and queued for email delivery.`,
-      attendees: updatedAttendees.map(({ emailPayload, ...rest }) => rest),
+      message: `Registration confirmed. ${result.attendeesCount} pass(es) generated and queued for email delivery.`,
+      attendees: result.attendees,
     });
-
-    // Asynchronously dispatch attendee ticket emails in background
-    (async () => {
-      for (const item of updatedAttendees) {
-        try {
-          const emailResult = await EmailService.sendTicketEmail(item.emailPayload);
-          db.prepare(`
-            UPDATE attendees
-            SET email_sent = ?, email_sent_at = CURRENT_TIMESTAMP
-            WHERE id = ?
-          `).run(emailResult.success ? 1 : 0, item.id);
-        } catch (emailErr) {
-          console.error(`[BACKGROUND EMAIL] Error sending ticket email to ${item.name}:`, emailErr);
-        }
-      }
-    })();
   } catch (err: unknown) {
     console.error('Confirmation error:', err);
-    res.status(500).json({ error: 'Failed to confirm registration.' });
+    res.status(500).json({ error: (err as Error).message || 'Failed to confirm registration.' });
   }
 });
 
@@ -572,36 +503,66 @@ router.post('/attendees/:id/resend-email', requireAdmin, async (req: Request, re
   }
 });
 
-// POST /api/registrations/purge-all (Admin Protected - Reset all test attendee and registration data)
-router.post('/purge-all', requireAdmin, async (_req: Request, res: Response): Promise<void> => {
+// POST /api/registrations/reset & /api/registrations/purge-all (Admin Protected - Reset all test attendee and registration data)
+router.post(['/reset', '/purge-all'], requireAdmin, async (_req: Request, res: Response): Promise<void> => {
   try {
     const transaction = db.transaction(() => {
       db.exec('DELETE FROM check_ins');
       db.exec('DELETE FROM attendees');
       db.exec('DELETE FROM registrations');
       db.exec('DELETE FROM users');
+      try {
+        db.exec("DELETE FROM sqlite_sequence WHERE name IN ('registrations', 'attendees', 'check_ins')");
+      } catch {
+        // ignore if sqlite_sequence not initialized
+      }
     });
     transaction();
 
-    // Mirror purge to Supabase if configured
+    // Clean up generated pass files from uploads/passes
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const passesDir = path.resolve(process.cwd(), 'uploads/passes');
+      if (fs.existsSync(passesDir)) {
+        const files = fs.readdirSync(passesDir);
+        for (const file of files) {
+          if (file !== '.gitkeep') {
+            try {
+              fs.unlinkSync(path.join(passesDir, file));
+            } catch {
+              // ignore single file unlinks
+            }
+          }
+        }
+      }
+    } catch (fsErr) {
+      console.warn('[RESET PASS CLEANUP WARNING]', fsErr);
+    }
+
+    // Mirror reset to Supabase if configured
     if (supabase) {
       try {
         await supabase.from('check_ins').delete().neq('id', 0);
         await supabase.from('attendees').delete().neq('id', '');
         await supabase.from('registrations').delete().neq('id', '');
-        await supabase.from('users').delete().neq('id', '');
+        try {
+          await supabase.from('users').delete().neq('id', '');
+        } catch {
+          // ignore if users table does not exist in Supabase
+        }
       } catch (sbErr) {
-        console.warn('[SUPABASE PURGE WARNING]', sbErr);
+        console.warn('[SUPABASE RESET WARNING]', sbErr);
       }
     }
 
     res.json({
       success: true,
-      message: 'All test registrations, attendees, users, and check-in records have been permanently cleared.',
+      message: 'All test registrations, attendees, users, and check-in records have been permanently reset.',
     });
   } catch (err: unknown) {
-    console.error('Purge error:', err);
-    res.status(500).json({ error: 'Failed to purge data.' });
+    console.error('Reset error:', err);
+    res.status(500).json({ error: 'Failed to reset data.' });
   }
 });
 

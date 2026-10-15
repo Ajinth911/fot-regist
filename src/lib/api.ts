@@ -1,4 +1,12 @@
-import type { EventConfig, Registration, ScannerScanResult, AdminUser, AttendeeUser, Attendee } from '../types';
+import type {
+  EventConfig,
+  Registration,
+  ScannerScanResult,
+  AdminUser,
+  AttendeeInput,
+  RazorpayOrderResponse,
+  RazorpayVerifyResponse,
+} from '../types';
 
 export class ApiError extends Error {
   status: number;
@@ -20,12 +28,8 @@ async function request<T>(url: string, options: RequestInit = {}): Promise<T> {
   }
 
   const adminToken = localStorage.getItem('fot_admin_token');
-  const userToken = localStorage.getItem('fot_user_token');
-  const isUserEndpoint = url.startsWith('/api/auth/user');
-  const isAdminEndpoint = url.startsWith('/api/scanner') || url.includes('/confirm') || url.includes('/reject') || url.includes('/resend-email') || url.startsWith('/api/export') || url.startsWith('/api/admin') || (url.startsWith('/api/registrations') && options.method !== 'POST');
-  const token = isAdminEndpoint ? adminToken : (isUserEndpoint ? userToken : (adminToken || userToken));
-  if (token) {
-    defaultHeaders['Authorization'] = `Bearer ${token}`;
+  if (adminToken) {
+    defaultHeaders['Authorization'] = `Bearer ${adminToken}`;
   }
 
   const targetUrl = url.startsWith('http') ? url : `${API_BASE_URL}${url}`;
@@ -69,7 +73,45 @@ export const api = {
   // Public Event API
   getEventConfig: () => request<EventConfig>('/api/event'),
 
-  // Public Registration Submission
+  // Razorpay Payment API
+  getPaymentConfig: () =>
+    request<{ keyId: string; isConfigured: boolean }>('/api/payment/config'),
+
+  checkAttendees: (attendees: AttendeeInput[]) =>
+    request<{ valid: boolean; error?: string }>('/api/payment/check-attendees', {
+      method: 'POST',
+      body: JSON.stringify({ attendees }),
+    }),
+
+  createRazorpayOrder: (payload: {
+    payerName?: string;
+    payerEmail?: string;
+    payerPhone?: string;
+    attendees?: AttendeeInput[];
+    amount?: number;
+    currency?: string;
+    receipt?: string;
+  }) =>
+    request<RazorpayOrderResponse>('/api/create-order', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  verifyRazorpayPayment: (payload: {
+    registrationId?: string;
+    order_id?: string;
+    payment_id?: string;
+    signature?: string;
+    razorpay_order_id?: string;
+    razorpay_payment_id?: string;
+    razorpay_signature?: string;
+  }) =>
+    request<RazorpayVerifyResponse>('/api/verify-payment', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
+
+  // Legacy Public Registration Submission (with screenshot)
   submitRegistration: (formData: FormData) =>
     request<{ success: boolean; registrationId: string; totalAmount: number; message: string }>('/api/registrations', {
       method: 'POST',
@@ -98,30 +140,7 @@ export const api = {
     request<{ authenticated: boolean; admin: AdminUser }>('/api/auth/me'),
 
   // Attendee / User Authentication
-  userSignUp: (payload: { name: string; email: string; phone?: string; password: string }) =>
-    request<{ success: boolean; user: AttendeeUser; token: string; message: string }>('/api/auth/user/signup', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-    }),
 
-  userLogin: (credentials: { email: string; password: string }) =>
-    request<{ success: boolean; user: AttendeeUser; token: string }>('/api/auth/user/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials),
-    }),
-
-  getUserMe: () =>
-    request<{
-      authenticated: boolean;
-      user: AttendeeUser;
-      tickets: Attendee[];
-      registrations: Registration[];
-    }>('/api/auth/user/me'),
-
-  userLogout: () =>
-    request<{ success: boolean; message: string }>('/api/auth/user/logout', {
-      method: 'POST',
-    }),
 
   // Event Configuration Update
   updateEventConfig: (config: Partial<EventConfig>) =>
@@ -164,8 +183,13 @@ export const api = {
       method: 'POST',
     }),
 
+  resetAllData: () =>
+    request<{ success: boolean; message: string }>('/api/registrations/reset', {
+      method: 'POST',
+    }),
+
   purgeAllData: () =>
-    request<{ success: boolean; message: string }>('/api/registrations/purge-all', {
+    request<{ success: boolean; message: string }>('/api/registrations/reset', {
       method: 'POST',
     }),
 

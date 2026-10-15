@@ -263,7 +263,11 @@ export const GroupRegistrationsView: React.FC<GroupRegistrationsViewProps> = ({
                 {/* Footer Controls */}
                 <div className="flex items-center justify-between pt-4 border-t border-[#E6E6DF]">
                   <div className="flex items-center gap-3">
-                    {reg.payment_screenshot_url && (
+                    {reg.razorpay_payment_id ? (
+                      <span className="inline-flex items-center gap-1.5 text-xs font-mono font-bold bg-[#C2E600]/25 text-[#0A0A0A] px-2.5 py-1 rounded-full border border-[#A5C200]">
+                        Razorpay: {reg.razorpay_payment_id}
+                      </span>
+                    ) : reg.payment_screenshot_url ? (
                       <button
                         type="button"
                         onClick={() => onPreviewScreenshot(reg.payment_screenshot_url!)}
@@ -272,7 +276,7 @@ export const GroupRegistrationsView: React.FC<GroupRegistrationsViewProps> = ({
                         <IconEye size={14} />
                         <span>View payment screenshot</span>
                       </button>
-                    )}
+                    ) : null}
                     {reg.utr_number && (
                       <span className="text-xs font-mono text-[#8C8C85]">
                         UTR: <strong className="text-[#0A0A0A]">{reg.utr_number}</strong>

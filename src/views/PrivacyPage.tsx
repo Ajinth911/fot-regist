@@ -49,7 +49,7 @@ export const PrivacyPage: React.FC = () => {
           <section className="space-y-2">
             <h2 className="text-base font-bold text-[#0A0A0A]">3. Data Retention & Security</h2>
             <p>
-              All participant records are stored with standard access controls. Payment screenshots are retained solely until transaction verification is completed by GenLab administrators.
+              All participant records are stored with standard access controls. Payment transactions are processed through Razorpay's PCI-DSS compliant secure infrastructure.
             </p>
           </section>
 
